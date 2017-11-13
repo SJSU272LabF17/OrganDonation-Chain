@@ -30,7 +30,8 @@ class Login extends Component {
       zip:"",
       showsignIn:true,
       showsAgreementError:true,
-      userType: "User Type"
+      userType: "User Type",
+      showTyperror:false
     };
 
     this.handleFNChange = this.handleFNChange.bind(this);
@@ -73,7 +74,7 @@ class Login extends Component {
   }
 
   handleUserTypeChange(event){
-    this.setState({userType: event.target.innerText});
+    this.setState({userType: event.target.innerText, showTyperror:false});
   }
 
   handleZipChange(event) {
@@ -90,15 +91,17 @@ class Login extends Component {
   }
 
   handleLogin(event) {
-    if(this.validateEmail(this.state.username) && this.state.password){
+    if(this.validateEmail(this.state.username) && this.state.password && !this.state.showTyperror){
       this.props.dispatch(this.props.requestLogin(this.state));
       event.preventDefault();
+    } else {
+      this.setState({showTyperror:true});
     }
     //() => this.props.history.push('/userHome')
   }
 
   handleRegister(event) {
-    if(!this.state.showsAgreementError && this.validateEmail(this.state.username) && this.state.password && this.state.firstName && this.state.lastName){
+    if(!this.state.showsAgreementError && this.validateEmail(this.state.username) && this.state.password && this.state.firstName && this.state.lastName && !this.state.showTyperror){
       this.props.dispatch(this.props.requestRegister(this.state));
       event.preventDefault();
     } else if(this.state.showsAgreementError) {
@@ -115,6 +118,8 @@ class Login extends Component {
       this.props.history.push('/userHome');
     } else if(sessionStorage.getItem('jwtToken')=="Hospital"){
       this.props.history.push('/HospitalHome');
+    } else {
+      this.setState({showTyperror: true});
     }
   }
 
@@ -151,19 +156,20 @@ class Login extends Component {
                 <div className="login-field">
                   <input required placeholder="Password" className="text-input-input autofocus" type="password" name="password" value={this.state.password} onChange={this.handlePWChange} />
                 </div>
-                <div class="dropdown fullWidth">
-                  <button class="btn btn-secondary dropdown-toggle fullWidth" type="button" id="registerType" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <div className="dropdown fullWidth">
+                  <button className="btn btn-secondary dropdown-toggle fullWidth" type="button" id="registerType" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {this.state.userType}
                   </button>
-                  <div class="dropdown-menu fullWidth" aria-labelledby="registerType">
-                    <a class="dropdown-item" href="#" onClick={this.handleUserTypeChange}>Donor</a>
-                    <a class="dropdown-item" href="#"  onClick={this.handleUserTypeChange}>Hospital</a>
+                  <div className="dropdown-menu fullWidth" aria-labelledby="registerType">
+                    <a className="dropdown-item" href="#" onClick={this.handleUserTypeChange}>Donor</a>
+                    <a className="dropdown-item" href="#"  onClick={this.handleUserTypeChange}>Hospital</a>
                   </div>
                 </div>
                 <div className="remember-me">
                   <input type="checkbox" id="rememberMe" name="rememberMe" value="rememberMe"/>Remember me
                 </div>
                 <div className={this.props.loginFailed ? 'text-input-error-wrapper' : 'text-input-error-wrapper success'}>{this.props.loginMsg}</div>
+                { this.state.showTyperror ? <div className="text-input-error-wrapper">Please choose type</div> : null}
                 <input type="submit" className="btn login-button" value="login" onClick={this.handleLogin}/>
                 <a href="" className="ForgotPass" onClick={this.showRegister}>Forgot your password?</a>
               </div>
@@ -190,13 +196,13 @@ class Login extends Component {
               <div className="login-field">
                 <input required placeholder="Last Name" className="text-input-input autofocus" type="text" name="lastName" value={this.state.lastName} onChange={this.handleLNChange} />
               </div>
-              <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="registerType" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <div className="dropdown">
+                <button className="btn btn-secondary dropdown-toggle" type="button" id="registerType" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   User Type
                 </button>
-                <div class="dropdown-menu" aria-labelledby="registerType">
-                  <a class="dropdown-item" href="#" onClick={this.handleUserTypeChange}>Donor</a>
-                  <a class="dropdown-item" href="#" onClick={this.handleUserTypeChange}>Hospital</a>
+                <div className="dropdown-menu" aria-labelledby="registerType">
+                  <a className="dropdown-item" href="#" onClick={this.handleUserTypeChange}>Donor</a>
+                  <a className="dropdown-item" href="#" onClick={this.handleUserTypeChange}>Hospital</a>
                 </div>
               </div>
               <div className="login-field">
@@ -210,6 +216,7 @@ class Login extends Component {
               </div>
               <div className="remember-me">
                 { this.state.showsAgreementError ? <div className="text-input-error-wrapper">Please agree to the terms of service</div> : null}
+                { this.state.showTyperror ? <div className="text-input-error-wrapper">Please choose type</div> : null}
                 <input type="checkbox" value={this.state.showsAgreementError?'FALSE':'TRUE'} id="rememberMe" name="agreementCheck" onChange={this.handleAgreement}/>I agree to <a target="_blank" href="html/agreement.html">Terms & conditions</a>
               </div>
               <div className={this.props.registerFailed ? 'text-input-error-wrapper' : 'text-input-error-wrapper success'}>{this.props.registerMsg}</div>

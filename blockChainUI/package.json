@@ -15,6 +15,7 @@
     "react-router-dom": "*",
     "react-script": "^2.0.5",
     "react-scripts": "*",
+    "react-scroll": "^1.6.4",
     "react-tabs-redux": "^2.0.1",
     "redux": "*",
     "redux-logger": "*",
