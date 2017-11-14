@@ -1,0 +1,16 @@
+var mongoose = require("mongoose");
+hospitalSchema = new mongoose.Schema({
+    hospitalId : Number,
+    name : String,
+    address : {
+        street:String,
+        line2:String,
+        city: String,
+        State: String,
+        zip: Number
+    },
+    phone : Number,
+    email : String,
+    password : String
+});
+module.exports = mongoose.model('Hospital', hospitalSchema);

@@ -1,14 +1,14 @@
-import mongoose from 'mongoose';
+var mongo = require("./mongo.js");
 
-const Schema = mongoose.Schema;
+const Schema = mongo.Schema;
 
-export  const appointmentSchema = new Schema({
+export const appointmentSchema = new Schema({
     date: Date,
-    sourceHospital: String,
+    sourceHospital: Number,
     userID: Number,
     organ: String,     //If you know how to use enum, do that.
     status: String,       //active or inactive
-    type:String     //testing or transplant
+    type: String     //testing or transplant
 });
 
 export const hospitalInfoSchema = new Schema({
@@ -32,7 +32,7 @@ export const organInfoSchema = new Schema({
     donorId:Number,
     organTestInfo:String,
     sourceHospital:Number,
-    targetHospital:String
+    targetHospital:Number
 });
 
 export const donorInfo = new Schema({

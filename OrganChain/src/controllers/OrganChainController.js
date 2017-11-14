@@ -27,4 +27,3 @@ const Recepient = mongoose.model("Recepient", recepientInfo);
 //GET organ by donorId
 //GET organ by organId. To be used by recepient 
 //POST organ
-export const 
