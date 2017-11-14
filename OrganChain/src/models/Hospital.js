@@ -1,6 +1,5 @@
 var mongoose = require("mongoose");
 hospitalSchema = new mongoose.Schema({
-    hospitalId : Number,
     name : String,
     address : {
         street:String,

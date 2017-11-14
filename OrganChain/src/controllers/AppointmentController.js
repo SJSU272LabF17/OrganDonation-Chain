@@ -5,7 +5,7 @@ exports.create = function(req, res) {
     if(!req.body.date) {
         return res.status(400).send({message: "Appointment can not be empty"});
     }
-    var promise = appointmentSave(req.body.date, req.body.sourceHospital, req.body.userID, req.body.organ,
+    var promise = appointmentSave(req.body.date, req.body.sourceHospital, req.body.donorID, req.body.organ,
         req.body.status, req.body.type)
     promise.then(function(appointment) {
         console.log("success");
@@ -16,11 +16,11 @@ exports.create = function(req, res) {
     });
 };
 
-appointmentSave = function(date, sourceHospital, userId, organ, status, type) {
-    var note = new Appointment({date : date, sourceHospital: sourceHospital, userID: userId, organ: organ,
+appointmentSave = function(date, sourceHospital, donorId, organ, status, type) {
+    var appointment = new Appointment({date : date, sourceHospital: sourceHospital, donorId: donorId, organ: organ,
         status: status, type: type});
 
-    var promise = note.save();
+    var promise = appointment.save();
     return promise
 }
 
@@ -36,6 +36,12 @@ exports.findAll = function(req, res) {
             res.send(appts);
         }
     });
+};
+
+exports.scheduledHospitalAppts = function (req, res) {
+
+    Appointment.find().populate("");
+
 };
 
 exports.update = function(req, res) {

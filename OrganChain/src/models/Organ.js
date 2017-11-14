@@ -1,10 +1,10 @@
 var mongoose = require("mongoose");
+Schema = mongoose.Schema;
 organSchema = new mongoose.Schema({
     name : String,
-    id: Number,
-    donorId: Number,
+    donorID: [{ type: Schema.Types.ObjectId, ref: 'Donor' }],
     organTestInfo: Number,
-    sourceHospital: Number,
-    targetHospital: Number
+    sourceHospital: [{ type: Schema.Types.ObjectId, ref: 'Hospital' }],
+    targetHospital: [{ type: Schema.Types.ObjectId, ref: 'Hospital' }]
 });
 module.exports = mongoose.model('Organ', organSchema);

@@ -1,7 +1,6 @@
 var mongoose = require("mongoose");
 donorSchema = new mongoose.Schema({
     name : String,
-    donorId: Number,
     age : Number,
     organName: String,
     email: String,

@@ -5,9 +5,8 @@ exports.create = function(req, res) {
     if(!req.body.name) {
         return res.status(400).send({message: "Donor name can not be empty"});
     }
-    var donor = new Donor({name: req.body.name, age: req.body.age, donorId: req.body.donorId,
-        organName: req.body.organName, email: req.body.email, phone: req.body.phone, address: req.body.phone,
-        password: req.body.password});
+    var donor = new Donor({name: req.body.name, age: req.body.age, organName: req.body.organName,
+        email: req.body.email, phone: req.body.phone, address: req.body.address, password: req.body.password});
     var promise = donor.save();
     promise.then(function(donor) {
         console.log("success");
