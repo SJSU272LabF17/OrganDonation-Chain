@@ -21,9 +21,10 @@ router.get("/",function(req,res){
 app.use('/',router);
 
 require('./routes/user.routes.js')(app);
+require('./routes/Donor.routes.js')(app);
 
 // listen for requests
-app.listen(3000, function(){
+app.listen(3001, function(){
     console.log("Server is listening on port 3000");
 });
 

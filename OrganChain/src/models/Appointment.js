@@ -2,7 +2,7 @@ var mongoose = require("mongoose");
 appointmentSchema = new mongoose.Schema({
     date: Date,
     sourceHospital: Number,
-    userID: Number,
+    userID: String,
     organ: String,     //If you know how to use enum, do that.
     status: String,       //active or inactive
     type: String     //testing or transplant

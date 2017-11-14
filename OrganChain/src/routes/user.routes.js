@@ -21,5 +21,7 @@ module.exports = function(app) {
 
     // Create a new Note
     app.post('/appointment', appointment.create);
+    app.get('/appointment', appointment.findAll);
+
 
 }

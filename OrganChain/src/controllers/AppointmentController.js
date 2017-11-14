@@ -5,7 +5,7 @@ exports.create = function(req, res) {
     if(!req.body.date) {
         return res.status(400).send({message: "Appointment can not be empty"});
     }
-    var promise = appointmentSave(req.body.date, req.body.sourceHospital, req.body.userId, req.body.organ,
+    var promise = appointmentSave(req.body.date, req.body.sourceHospital, req.body.userID, req.body.organ,
         req.body.status, req.body.type)
     promise.then(function(appointment) {
         console.log("success");
@@ -26,6 +26,16 @@ appointmentSave = function(date, sourceHospital, userId, organ, status, type) {
 
 exports.findOne = function(req, res) {
 
+};
+
+exports.findAll = function(req, res) {
+    Appointment.find(function(err, appts){
+        if(err) {
+            res.status(500).send({message: "Some error occurred while retrieving appts."});
+        } else {
+            res.send(appts);
+        }
+    });
 };
 
 exports.update = function(req, res) {

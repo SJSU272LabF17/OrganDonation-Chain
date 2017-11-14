@@ -1,6 +1,6 @@
 var Donor = require('../models/Donor.js');
 
-exports.createAndLogin = function(req, res) {
+exports.create = function(req, res) {
 
     if(!req.body.name) {
         return res.status(400).send({message: "Donor name can not be empty"});
@@ -19,6 +19,12 @@ exports.createAndLogin = function(req, res) {
 };
 
 exports.findAll = function(req, res) {
-
+    Donor.find(function(err, donors){
+        if(err) {
+            res.status(500).send({message: "Some error occurred while retrieving donors info."});
+        } else {
+            res.send(donors);
+        }
+    });
 }
 
