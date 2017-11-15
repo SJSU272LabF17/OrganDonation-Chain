@@ -17,11 +17,4 @@ module.exports = function(app) {
     // Delete a Note with noteId
     app.delete('/user/:userId', user.delete);
 
-    var appointment = require('../controllers/AppointmentController.js');
-
-    // Create a new Note
-    app.post('/appointment', appointment.create);
-    app.get('/appointment', appointment.findAll);
-
-
 }

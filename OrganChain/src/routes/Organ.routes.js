@@ -5,6 +5,8 @@ module.exports = function(app) {
     // Create a new Donor
     app.post('/organ', organ.create);
 
+    app.put('/organ/:organId', organ.update);
+
     app.get('/organ', organ.findAll);
 
 };

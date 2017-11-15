@@ -17,7 +17,7 @@ exports.create = function(req, res) {
 };
 
 appointmentSave = function(date, sourceHospital, donorId, organ, status, type) {
-    var appointment = new Appointment({date : date, sourceHospital: sourceHospital, donorId: donorId, organ: organ,
+    var appointment = new Appointment({date : date, sourceHospital: sourceHospital, donorID: donorId, organ: organ,
         status: status, type: type});
 
     var promise = appointment.save();
@@ -39,9 +39,28 @@ exports.findAll = function(req, res) {
 };
 
 exports.scheduledHospitalAppts = function (req, res) {
+    var apptType = req.query.type;
+    var apptKeyword;
+    var sql = Appointment.find().where('status').equals('active');
+    if (apptType == 'testing') {
+        apptKeyword = 'testing';
+    } else if(apptType == 'transplant') {
+        apptKeyword = apptType;
+    } else {
+        apptKeyword = null;
+    }
+    if (apptKeyword != null) {
+        sql.where('type').equals(apptKeyword)
+    }
 
-    Appointment.find().populate("");
-
+    sql.populate("donorID").populate("organ").populate("sourceHospital")
+        .exec(function(err, appts){
+            if(err) {
+                res.status(500).send({message: "Some error occurred while retrieving appts."});
+            } else {
+                res.send(appts);
+            }
+        });
 };
 
 exports.update = function(req, res) {

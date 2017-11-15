@@ -13,4 +13,4 @@ module.exports = function(app) {
 
     // app.get('/donor/:donorId', donor.findOne);
 
-}
+};

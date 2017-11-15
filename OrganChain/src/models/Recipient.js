@@ -1,20 +1,20 @@
 var mongoose = require("mongoose");
 recipientSchema = new Schema({
-    recipientId: Number,
     name: String,
     age: Number,
     organ: String,
-    hospital: Number,
+    hospital: { type: Schema.Types.ObjectId, ref: 'Hospital' },
     email: String,
     phone: Number,
-    lab: Number,
-    allotedOrganId: Number,   //null by default
+    status: String,
+    testInfo: Object,
+    allotedOrganId:  { type: Schema.Types.ObjectId, ref: 'Organ' },   //null by default
     address: {
         street: String,
         line2: String,
         city: String,
         state: String,
-        zip: number
+        zip: Number
     }
 });
 module.exports = mongoose.model('Recipient', recipientSchema);

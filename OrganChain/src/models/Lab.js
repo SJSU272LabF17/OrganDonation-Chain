@@ -1,6 +1,6 @@
 var mongoose = require("mongoose");
 labSchema = new mongoose.Schema({
-    id: Number,
+    id: String,
     BloodType : String,
     Class1Protein: String,
     Class2Protein: String,

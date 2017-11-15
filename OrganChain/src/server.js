@@ -27,6 +27,8 @@ require('./routes/user.routes.js')(app);
 require('./routes/Donor.routes.js')(app);
 require('./routes/Hospital.routes.js')(app);
 require('./routes/Organ.routes.js')(app);
+require('./routes/Appointment.routes.js')(app);
+require('./routes/Recipient.routes.js')(app);
 
 // listen for requests
 app.listen(3001, function(){
