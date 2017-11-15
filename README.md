@@ -1,7 +1,8 @@
 Organ Waitlist ledger on a blockchain.
 
-For UI:-
-got to ./blockChainUI
-run npm install
-run npm start
-hit http://localhost:3000/ 
+Organ waitlist uses two servers :
+Backend server on 3001 and front end server on 3000.
+
+Each server specs and details are located in their respective folders.
+
+Under development
