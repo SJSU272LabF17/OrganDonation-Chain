@@ -18,3 +18,4 @@ recipientSchema = new Schema({
     }
 });
 module.exports = mongoose.model('Recipient', recipientSchema);
+
