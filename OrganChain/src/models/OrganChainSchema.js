@@ -4,15 +4,15 @@ const Schema = mongo.Schema;
 
 export const appointmentSchema = new Schema({
     date: Date,
-    sourceHospital: Number,
-    userID: Number,
+    sourceHospital: String, //In Transplant type this will be the destination hospitalId.
+    userID: String,
     organ: String,     //If you know how to use enum, do that.
     status: String,       //active or inactive
     type: String     //testing or transplant
 });
 
 export const hospitalInfoSchema = new Schema({
-    hospitalId : Number,
+    hospitalId : String,
     name : String,
     address : {
         street:String,
@@ -28,17 +28,17 @@ export const hospitalInfoSchema = new Schema({
 
 export const organInfoSchema = new Schema({
     name : String,
-    id: Number,
-    donorId:Number,
+    id: String,
+    donorId:String,
     organTestInfo:String,
-    sourceHospital:Number,
-    targetHospital:Number
+    sourceHospital:String,
+    targetHospital:String
 });
 
 export const donorInfo = new Schema({
-    id: Number,
+    id: String,
     name : String,
-    donorId: Number,
+    donorId: String,
     age : Number,
     organName: String,
     email:String,
@@ -54,15 +54,15 @@ export const donorInfo = new Schema({
 });
 
 export const recepientInfo = new Schema({
-    recepientId : Number,
+    recepientId : String,
     name:String,
     age:Number,
     organ:String,
-    hospital:Number,
+    hospitalId:String,
     email:String,
     phone:Number,
     lab:String,
-    allotedOrganId:Number,   //null by default
+    allotedOrganId:String,   //null by default
     address:{
         street:String,
         line2:String,

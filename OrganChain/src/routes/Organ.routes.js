@@ -1,3 +1,7 @@
+import {
+    getOrganByEmail,
+    organCreate
+} from '../controllers/OrganController'
 module.exports = function(app) {
 
     var organ = require('../controllers/OrganController.js');
@@ -9,4 +13,7 @@ module.exports = function(app) {
 
     app.get('/organ', organ.findAll);
 
+    app.route('/organU/:email')
+    .get(getOrganByEmail)
+    .post(organCreate)
 };

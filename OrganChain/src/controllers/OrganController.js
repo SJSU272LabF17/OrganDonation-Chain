@@ -66,3 +66,14 @@ exports.cleanup = function (req, res) {
         }
     });
 };
+
+//Organ
+export const organCreate = (req, res) => {
+    console.log('organCreate called');
+    res.json("POST");
+}
+
+export const getOrganByEmail = (req, res) => {
+    console.log('getOrganByEmail called');
+    res.json("GET");
+}
