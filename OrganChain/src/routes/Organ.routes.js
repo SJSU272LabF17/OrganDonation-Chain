@@ -1,7 +1,7 @@
 import {
     getOrganByEmail,
     organCreate
-} from '../controllers/OrganController'
+} from '../controllers/OrganController';
 module.exports = function(app) {
 
     var organ = require('../controllers/OrganController.js');
