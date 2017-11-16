@@ -4,6 +4,7 @@ import Login from '../component/login';
 import Landing from '../component/landing';
 import UserHome from '../component/userHome';
 import HospitalHome from '../component/hospitalHome';
+import UnosHome from '../component/unosHome';
 
 export default function() {
 	return (<BrowserRouter>
@@ -12,6 +13,7 @@ export default function() {
 			<Route path="/login" exact render={props => <Login {...props} />}/>
 			<Route path="/userHome" exact render={props => <UserHome {...props} />}/>
 			<Route path="/hospitalHome" exact render={props => <HospitalHome {...props} />}/>
+			<Route path="/unosHome" exact render={props => <UnosHome {...props} />}/>
 		</Switch>
 	</BrowserRouter>);
 }

@@ -19,7 +19,6 @@ export function requestLogin(state){
 			if( response.data.token){
 				sessionStorage.setItem('jwtToken', response.data.token);
 				sessionStorage.setItem('userId', response.data.userId);
-				sessionStorage.setItem('currentFileId', response.data.userId);
 				dispatch({type:"loginSuccess", payload: response.data});
 			}
 		}).catch((err) => {

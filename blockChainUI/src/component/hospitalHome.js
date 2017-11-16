@@ -19,7 +19,7 @@ const mapDispatchToProps = (dispatch) => {
   return { ...actions, dispatch };
 }
 
-class Home extends Component {
+class HospitalHome extends Component {
 	constructor(props) {
     	super(props);    	
 	    this.state = {
@@ -189,7 +189,7 @@ class Home extends Component {
 				            </div>
 				            <ul className="list-unstyled components">
 				                <li className="active">
-				                    <TabLink to="section-checkUp"><a href="#section-checkUp" data-toggle="tab" className="tab-toggle active">Apponintments For Organ Test</a></TabLink>
+				                    <TabLink to="section-checkUp"><a href="#section-checkUp" data-toggle="tab" className="tab-toggle active">Appointments For Organ Test</a></TabLink>
 				                </li>
 				                <li>
 				                    <TabLink to="section-recipient"><a href="#section-recipient" data-toggle="tab" className="tab-toggle">Register Recipients</a></TabLink>
@@ -237,7 +237,7 @@ class Home extends Component {
 						            <nav className="navbar navbar-default">
 						                <div className="container-fluid">
 						                    <div className="navbar-header">
-						                        <h2>Donate Organ
+						                        <h2>Register Recipients
 							                        <div className="rightPart">
 												        <header className="pageHeader col-md-12">
 												            <div className="top-menu-container col-md-6">
@@ -328,7 +328,7 @@ class Home extends Component {
 						            <nav className="navbar navbar-default">
 						                <div className="container-fluid">
 						                    <div className="navbar-header">
-						                        <h2>Appointment For Checkup
+						                        <h2>Appointment For Transplant
 							                        <div className="rightPart">
 												        <header className="pageHeader col-md-12">
 												            <div className="top-menu-container col-md-6">
@@ -366,7 +366,7 @@ class Home extends Component {
 			        <div className="modal-dialog verfiyModal">
 			            <div className="modal-content">
 			                <div className="modal-header">
-			                    <h4 className="modal-title">Organ Approval</h4>
+			                    <h4 className="modal-title">Organ Approval Details</h4>
 			                    <button type="button" className="close" data-dismiss="modal">&times;</button>
 			                </div>
 			                <div className="modal-body">
@@ -402,7 +402,7 @@ class Home extends Component {
 			        <div className="modal-dialog verfiyModal">
 			            <div className="modal-content">
 			                <div className="modal-header">
-			                    <h4 className="modal-title">Organ Approval</h4>
+			                    <h4 className="modal-title">Organ Approval Details</h4>
 			                    <button type="button" className="close" data-dismiss="modal">&times;</button>
 			                </div>
 			                <div className="modal-body">
@@ -613,4 +613,4 @@ class Home extends Component {
 export default connect(
   mapStateToProps, 
   mapDispatchToProps
-)(Home);
+)(HospitalHome);
