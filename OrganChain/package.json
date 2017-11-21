@@ -4,7 +4,8 @@
   "description": "Blockchain for Organ Sharing.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon ./src/server.js --exec babel-node -e js"
   },
   "repository": {
     "type": "git",

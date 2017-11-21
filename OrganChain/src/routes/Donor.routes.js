@@ -1,3 +1,9 @@
+import {
+    getdonorbyEmail,
+    addDonorbyEmail,
+    UpdateDonorbyEmail,
+    DeleteDonorbyEmail
+} from '../controllers/DonorController'
 module.exports = function(app) {
 
     var donor = require('../controllers/DonorController.js');
@@ -11,6 +17,10 @@ module.exports = function(app) {
 
     app.get('/donor', donor.findAll);
 
+    app.route('/donorU/:email')
+        .get(getdonorbyEmail)
+        .post(addDonorbyEmail)
+        .put(UpdateDonorbyEmail)
     // app.get('/donor/:donorId', donor.findOne);
 
 };
