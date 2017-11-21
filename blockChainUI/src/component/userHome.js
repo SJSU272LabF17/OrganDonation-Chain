@@ -18,7 +18,7 @@ const mapDispatchToProps = (dispatch) => {
   return { ...actions, dispatch };
 }
 
-class Home extends Component {
+class UserHome extends Component {
 	constructor(props) {
     	super(props);    	
 	    this.state = {
@@ -270,4 +270,4 @@ class Home extends Component {
 export default connect(
   mapStateToProps, 
   mapDispatchToProps
-)(Home);
+)(UserHome);
