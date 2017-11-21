@@ -18,13 +18,18 @@
   },
   "homepage": "https://github.com/SJSU272LabF17/Project-Team-21#readme",
   "dependencies": {
-    "body-parser": "^1.18.2",
-    "express": "^4.16.2",
-    "mongoose": "^4.13.1",
-    "nodemon": "^1.12.1",
-    "cookie-parser": "^1.4.3",
+    "babel-preset-stage-0": "^6.24.1",
     "bcryptjs": "^2.4.3",
-    "jsonwebtoken": "^8.1.0"
+    "body-parser": "^1.18.2",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.16.2",
+    "jsonwebtoken": "^8.1.0",
+    "mongoose": "^4.13.1",
+    "nodemon": "^1.12.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "babel-cli": "^6.6.5",
+    "babel-preset-stage-0": "*",
+    "babel-preset-es2015": "*"
+  }
 }
