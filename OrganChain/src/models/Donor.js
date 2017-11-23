@@ -1,17 +1,15 @@
 var mongoose = require("mongoose");
 var donorSchema = new mongoose.Schema({
-    name : String,
+    firstName : String,
+    lastName : String,
     age : Number,
-    organName: String,
     email: String,
     phone: Number,
-    address : {
-        street: String,
-        line2: String,
-        city: String,
-        state: String,
-        zip: Number
-    },
-    password: String
+    address : String,
+    zip: Number,
+    password: String,
+    message: String,
+    userType : String,
+    chekUpDate : Date
 });
 module.exports = mongoose.model('Donor', donorSchema);

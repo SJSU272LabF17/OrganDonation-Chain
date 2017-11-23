@@ -15,8 +15,3 @@ var appointmentSchema = new mongoose.Schema({
     type: String     //testing or transplant
 });
 module.exports = mongoose.model('Appointment', appointmentSchema);
-
-// 5a0bcfad128059327b27c77d don
-// 5a0bcfc0128059327b27c77e hos
-// organ 5a0bcff5c28561328755fb29
-// appt 5a0bd3c7d092f632e1cb586b

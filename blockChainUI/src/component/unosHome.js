@@ -160,14 +160,13 @@ class UnosHome extends Component {
 	}
 
 	componentWillReceiveProps(nextProps){
-		if(sessionStorage.getItem('jwtToken')==null){
+		if(sessionStorage.getItem('userId')==null){
 			this.props.history.push('/login');
 		}
 	}
 
 	handleLogout(){
 		sessionStorage.removeItem('currentFileId');
-		sessionStorage.removeItem('jwtToken');
 		sessionStorage.removeItem('userId');
 		this.setState({showLogout:!this.state.showLogout});
 		this.props.history.push('/login');
@@ -189,16 +188,19 @@ class UnosHome extends Component {
 				            </div>
 				            <ul className="list-unstyled components">
 				                <li className="active">
-				                    <TabLink to="section-checkUp"><a href="#section-checkUp" data-toggle="tab" className="tab-toggle active">Appointments For Organ Test</a></TabLink>
+				                    <TabLink to="section-checkUp"><a href="#section-profile" data-toggle="tab" className="tab-toggle active">Assign recepient</a></TabLink>
+				                </li>
+				                <li>
+				                    <TabLink to="section-hospital"><a href="#section-organ" data-toggle="tab" className="tab-toggle">Register Hospital</a></TabLink>
 				                </li>
 				            </ul>
 				        </nav>
-				        <div id="content" className="tab-content content">
+				        <div className="tab-content content">
 				        	<TabContent className="tab-pane fade in active show" for="section-checkUp">
 					            <nav className="navbar navbar-default">
 					                <div className="container-fluid">
 					                    <div className="navbar-header">
-					                        <h2>Appointments For Organ Test</h2>
+					                        <h2>Assign recepient</h2>
 					                    </div>
 					                </div>
 					            </nav>					            
@@ -216,7 +218,27 @@ class UnosHome extends Component {
 					                </div>
 					            </div>
 				        	</TabContent>
-				        </div>
+				        </div>				        
+			        	<TabContent for="section-hospital">
+				            <nav className="navbar navbar-default">
+				                <div className="container-fluid">
+				                    <div className="navbar-header">
+				                        <h2>Register Hospital</h2>
+				                    </div>
+				                </div>
+				            </nav>
+				            <div className="row">
+			                    <p className="col-md-3 text-left"><span>Name : </span>
+			                    <span value={this.props.name}>Hospital1</span> </p>
+			                    <p className="col-md-3 text-left"><span>Email : </span>
+			                    <span value={this.props.email}>admin@admin.com</span> </p>
+			                    <p className="col-md-3 text-left"><span>Contact Number:</span>
+			                    <span value={this.props.contactNumber}>25</span></p> 
+			                    <p className="col-md-3 text-left"><span>Address:</span>
+			                    <span value={this.props.address}>200 Rayland</span></p>
+			                </div>
+			                <input type="submit" className="btn login-button" value="Register New Hospital"/>
+			        	</TabContent>
 			        </Tabs>
 			    </div>
 			    <div id="organDetailsModal" className="modal fade" role="dialog">

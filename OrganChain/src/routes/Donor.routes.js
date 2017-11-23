@@ -1,26 +1,9 @@
-import {
-    getdonorbyEmail,
-    addDonorbyEmail,
-    UpdateDonorbyEmail,
-    DeleteDonorbyEmail
-} from '../controllers/DonorController'
+var donor = require('../controllers/DonorController.js');
+
 module.exports = function(app) {
-
-    var donor = require('../controllers/DonorController.js');
-
-    app.route("/")
-        .get()
-        .delete()
-        .post()
-    // Create a new Donor
-    app.post('/donor', donor.create);
-
-    app.get('/donor', donor.findAll);
-
-    app.route('/donorU/:email')
-        .get(getdonorbyEmail)
-        .post(addDonorbyEmail)
-        .put(UpdateDonorbyEmail)
-    // app.get('/donor/:donorId', donor.findOne);
-
+    app.post('/donor', donor.createDonor);
+    app.post('/donor/login', donor.donorLogin);
+    app.get('/donor/:email', donor.getDonorbyEmail);
+    app.get('/donor', donor.findAllDonor);    
+    app.put('/donor/:email', donor.updateDonorbyEmail);//not in use
 };

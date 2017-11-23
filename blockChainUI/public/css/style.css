@@ -553,6 +553,7 @@ a, a:hover, a:focus {
 .wrapper {
     display: flex;
     align-items: stretch;
+    height: 100%;
 }
 
 #sidebar {

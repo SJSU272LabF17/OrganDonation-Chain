@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { } from '../actions/allActions';
+import { retriveDonorByEmail, registerDonorOrgan, getHospitalsByZip, hospitalSelectedForCheckUp } from '../actions/allActions';
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux';
 
 const mapStateToProps = (state) => {
@@ -8,13 +8,18 @@ const mapStateToProps = (state) => {
     userId: sessionStorage.getItem('userId'),
     firstName: state.actionReducer.firstName,
     lastName: state.actionReducer.lastName,
+    age: state.actionReducer.age,
+    address: state.actionReducer.address,
+    zip: state.actionReducer.zip,
     email: state.actionReducer.email,
-    isloggedIn: state.actionReducer.isloggedIn
+    organName: state.actionReducer.organName,
+    isloggedIn: state.actionReducer.isloggedIn,
+    hospitalByZip: state.actionReducer.hospitalByZip
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
-  let actions = { };
+  let actions = { retriveDonorByEmail, registerDonorOrgan, getHospitalsByZip, hospitalSelectedForCheckUp};
   return { ...actions, dispatch };
 }
 
@@ -42,6 +47,8 @@ class UserHome extends Component {
 	    this.handleEmailChange = this.handleEmailChange.bind(this);
 	    this.handleAddressChange = this.handleAddressChange.bind(this);
 	    this.handleZipChange = this.handleZipChange.bind(this);
+	    this.handleOrganNameChange = this.handleOrganNameChange.bind(this);
+	    this.hospitalSelectedForCheckUp = this.hospitalSelectedForCheckUp.bind(this);
 	}
 
 	handleDropdownClick(e){
@@ -72,22 +79,29 @@ class UserHome extends Component {
     	this.setState({zip: event.target.value});
     }
 
+    handleOrganNameChange(event){
+    	this.setState({organName: event.target.value});
+    }
+
 	componentDidMount(){
-		//this.props.dispatch(this.props.retriveRecentFileList(this.props));
+		this.props.dispatch(this.props.retriveDonorByEmail(this.props));
 	}
 
 	componentWillReceiveProps(nextProps){
-		if(sessionStorage.getItem('jwtToken')==null){
+		if(sessionStorage.getItem('userId')==null){
 			this.props.history.push('/login');
 		}
 	}
 
   handleLogout(){
-  	sessionStorage.removeItem('currentFileId');
-  	sessionStorage.removeItem('jwtToken');
+  	sessionStorage.removeItem('userType');
   	sessionStorage.removeItem('userId');
   	this.setState({showLogout:!this.state.showLogout});
   	this.props.history.push('/login');
+  }
+
+  hospitalSelectedForCheckUp(hospital){
+  	this.props.dispatch(this.props.hospitalSelectedForCheckUp(hospital));
   }
 
   render() {
@@ -106,7 +120,7 @@ class UserHome extends Component {
 			                <li>
 			                    <TabLink to="section-organ"><a href="#section-organ" data-toggle="tab" className="tab-toggle">Donate An Organ</a></TabLink>
 			                </li>
-			                <li>
+			                <li onClick={() => this.props.dispatch(this.props.getHospitalsByZip(this.props))}>
 			                    <TabLink to="section-appointment"><a href="#section-appointment" data-toggle="tab" className="tab-toggle">Appointment For Check Up</a></TabLink>
 			                </li>
 			            </ul>
@@ -134,27 +148,27 @@ class UserHome extends Component {
 				            </nav>
 				            <div className="row">
 			                    <p className="col-md-2 text-right">First Name:</p>
-			                    <p className="col-md-10 text-left" value={this.props.firstName}>Admin</p> 
+			                    <p className="col-md-10 text-left" value={this.props.firstName}>{this.props.firstName}</p> 
 			                </div>
 				            <div className="row">
 			                    <p className="col-md-2 text-right">Last Name:</p>
-			                    <p className="col-md-10 text-left" value={this.props.lastName}>Admin</p> 
+			                    <p className="col-md-10 text-left" value={this.props.lastName}>{this.props.lastName}</p> 
 			                </div>
 				            <div className="row">
 			                    <p className="col-md-2 text-right">Age:</p>
-			                    <p className="col-md-10 text-left" value={this.props.age}>25</p> 
+			                    <p className="col-md-10 text-left" value={this.props.age}>{this.props.age}</p>
 			                </div>
 				            <div className="row">
 			                    <p className="col-md-2 text-right">Address:</p>
-			                    <p className="col-md-10 text-left" value={this.props.address}>200 Rayland</p> 
+			                    <p className="col-md-10 text-left" value={this.props.address}>{this.props.address}</p>
 			                </div>
 				            <div className="row">
 			                    <p className="col-md-2 text-right">Email:</p>
-			                    <p className="col-md-10 text-left" value={this.props.email}>admin@admin.com</p> 
+			                    <p className="col-md-10 text-left" value={this.props.email}>{this.props.email}</p>
 			                </div>
 				            <div className="row">
 			                    <p className="col-md-2 text-right">Zip code:</p>
-			                    <p className="col-md-10 text-left" value={this.props.firstName}>95000</p> 
+			                    <p className="col-md-10 text-left" value={this.props.zip}>{this.props.zip}</p>
 			                </div>
 			        	</TabContent>
 			        	<TabContent for="section-organ">
@@ -179,9 +193,9 @@ class UserHome extends Component {
 				            </nav>
 				            <div className="row">
 			                    <p className="col-md-2 text-right">Organ Type:</p>
-			                    <input className="col-md-10 text-left text-input-input autofocus" type="text" value={this.props.organType} onChange={this.handleFNChange} />
+			                    <input className="col-md-10 text-left text-input-input autofocus" type="text" value={this.props.organName} onChange={this.handleOrganNameChange} />
 			                </div>
-			                <input type="submit" className="btn login-button" value="Register My Organ!"/>
+			                <input type="submit" className="btn login-button" value="Register My Organ!" onClick={() => this.props.dispatch(this.props.registerDonorOrgan(this.props))}/>
 			        	</TabContent>
 			            <TabContent for="section-appointment">
 				            <nav className="navbar navbar-default">
@@ -204,34 +218,18 @@ class UserHome extends Component {
 				                </div>
 				            </nav>
 				            <h2>Available Appointments near your location</h2><p></p>
-				            <div class="list-group">
-							  <div href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-							    <div class="d-flex w-100 justify-content-between">
-							      <h5 class="mb-1">Stanford Liver Transplant Program</h5>
-							      <small>3 miles away</small>
-							    </div>
-							    <p class="mb-1">200 Jose Figueres Ave #395, San Jose, CA 95116</p>
-							    <small>5:18 PM Saturday, November 4, 2017 (PDT)</small>
-							    <button type="button" className="btn btn-primary">Choose</button>
-							  </div>
-							  <div href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-							    <div class="d-flex w-100 justify-content-between">
-							      <h5 class="mb-1">Liver Disease Management & Transplant</h5>
-							      <small class="text-muted">10.5 miles away</small>
-							    </div>
-							    <p class="mb-1">1471 Saratoga Ave, San Jose, CA 95129</p>
-							    <small class="text-muted">5:18 PM Saturday, November 4, 2017 (PDT)</small>
-							    <button type="button" className="btn btn-primary">Choose</button>
-							  </div>
-							  <div href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-							    <div class="d-flex w-100 justify-content-between">
-							      <h5 class="mb-1">Jenesis Lipoplasty & Laser</h5>
-							      <small class="text-muted">22 miles away</small>
-							    </div>
-							    <p class="mb-1">1471 Saratoga Ave, San Jose, CA 95129</p>
-							    <small class="text-muted">5:18 PM Saturday, November 4, 2017 (PDT)</small>
-							    <button type="button" className="btn btn-primary">Choose</button>
-							  </div>
+				            <div className="list-group">
+				            	{this.props.hospitalByZip && this.props.hospitalByZip.length>0 ? this.props.hospitalByZip.map(step =>
+				            		<div href="#" key={step.name} className="list-group-item list-group-item-action flex-column align-items-start">
+					            		<div className="d-flex w-100 justify-content-between">
+									      <h5 className="mb-1">{step.name}</h5>
+									      <small><span>zip:</span><span>{step.zip}</span></small>
+									    </div>
+									    <p className="mb-1">{step.address}</p>
+									    <small><span>Choose the date and time: </span><span>{step.chekUpDate}</span></small>
+									    <button type="button" className="btn btn-primary" onClick={this.hospitalSelectedForCheckUp.bind(this, step)}>Choose</button>
+									</div>
+				            	) : null}
 							</div>
 			        	</TabContent>
 			        </div>

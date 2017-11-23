@@ -15,6 +15,17 @@ var Donor = require('../../models/Donor.js');
  * Configure JWT
  */
 
+exports.login = function(req, res) {
+    // Retrieve and return all notes from the database.
+    User.find({email:req.params.email}, function(err, notes){
+        if(err) {
+            res.status(500).send({message: "Some error occurred while retrieving notes."});
+        } else {
+            res.send(notes);
+        }
+    });
+};
+
 router.post('/login', function(req, res) {
 
     if (req.body.userType == "donor") {
@@ -67,7 +78,7 @@ router.post('/register', function(req, res) {
 
 router.get('/me', VerifyToken, function(req, res, next) {
 
-    Donor.(req.donorId, { password: 0 }, function (err, donor) {
+    Donor.findOne(req.donorId, { password: 0 }, function (err, donor) {
         if (err) return res.status(500).send("There was a problem finding the user.");
         if (!donor) return res.status(404).send("No user found.");
         res.status(200).send(donor);

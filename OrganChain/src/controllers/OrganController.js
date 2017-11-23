@@ -5,18 +5,14 @@ var Organ = require('../models/Organ.js');
 //var mongoose = require('mongoose');
 const organModel= mongoose.model('Organ');
 const DonorModel = mongoose.model('Donor');
-exports.create = function(req, res) {
 
+exports.createOrgan = function(req, res) {
     var organ = new Organ({
         name: req.body.name, 
-        donorID: req.body.donorID, 
-        organTestInfo: req.body.organTestInfo,
-        sourceHospital: req.body.sourceHospital, 
-        targetHospital: req.body.targetHospital
+        donorId: req.body.donorId
     });
-    var promise = organ.save();
-    promise.then(function(organ) {
-        res.send(organ);
+    organ.save().then(function(organ) {
+        res.status(200).send(organ);
     }).catch(function(err) {
         console.log(err);
         res.status(500).send({message: "Some error occurred while creating the organ."});

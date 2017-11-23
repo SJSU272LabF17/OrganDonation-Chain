@@ -21,6 +21,7 @@ class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      name:"",
       firstName:"",
       lastName:"",
       username:"admin@admin.com",
@@ -28,6 +29,7 @@ class Login extends Component {
       age:"",
       address:"",
       zip:"",
+      phone : "",
       showsignIn:true,
       showsAgreementError:true,
       userType: "User Type",
@@ -41,12 +43,18 @@ class Login extends Component {
     this.handleAgeChange = this.handleAgeChange.bind(this);
     this.handleAddressChange = this.handleAddressChange.bind(this);
     this.handleZipChange = this.handleZipChange.bind(this);
+    this.handlePhoneChange = this.handlePhoneChange.bind(this);
     this.handleUserTypeChange = this.handleUserTypeChange.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
     this.handleRegister = this.handleRegister.bind(this);
     this.handleShowHide = this.handleShowHide.bind(this);
     this.handleAgreement = this.handleAgreement.bind(this);
     this.validateEmail = this.validateEmail.bind(this);
+    this.handleNameChange = this.handleNameChange.bind(this);
+  }
+
+  handleNameChange(event) {
+    this.setState({name: event.target.value});
   }
 
   handleFNChange(event) {
@@ -81,6 +89,10 @@ class Login extends Component {
     this.setState({zip: event.target.value});
   }
 
+  handlePhoneChange(event){
+    this.setState({phone: event.target.value});
+  }
+
   handleAgreement(event){
     this.setState({showsAgreementError: !this.state.showsAgreementError});
   }
@@ -101,7 +113,7 @@ class Login extends Component {
   }
 
   handleRegister(event) {
-    if(!this.state.showsAgreementError && this.validateEmail(this.state.username) && this.state.password && this.state.firstName && this.state.lastName && !this.state.showTyperror){
+    if(!this.state.showsAgreementError && this.validateEmail(this.state.username) && this.state.password && !this.state.showTyperror){
       this.props.dispatch(this.props.requestRegister(this.state));
       event.preventDefault();
     } else if(this.state.showsAgreementError) {
@@ -114,9 +126,9 @@ class Login extends Component {
   }
 
   componentWillMount(){
-    if(sessionStorage.getItem('jwtToken')=="Donor"){
+    if(sessionStorage.getItem('userType')=="Donor"){
       this.props.history.push('/userHome');
-    } else if(sessionStorage.getItem('jwtToken')=="Hospital"){
+    } else if(sessionStorage.getItem('userType')=="Hospital"){
       this.props.history.push('/HospitalHome');
     } else {
       this.setState({showTyperror: true});
@@ -124,9 +136,9 @@ class Login extends Component {
   }
 
   componentWillReceiveProps(){
-    if(sessionStorage.getItem('jwtToken')=="Donor"){
+    if(sessionStorage.getItem('userType')=="Donor"){
       this.props.history.push('/userHome');
-    } else if(sessionStorage.getItem('jwtToken')=="Hospital"){
+    } else if(sessionStorage.getItem('userType')=="Hospital"){
       this.props.history.push('/HospitalHome');
     }
   }
@@ -190,29 +202,35 @@ class Login extends Component {
               <div className="login-field">
                 <input required placeholder="Password" className="text-input-input autofocus" type="password" name="password" value={this.state.password} onChange={this.handlePWChange} />
               </div>
-              <div className="login-field">
-                <input required placeholder="First Name" className="text-input-input autofocus" type="text" name="firstName" value={this.state.firstName} onChange={this.handleFNChange} />
-              </div>
-              <div className="login-field">
-                <input required placeholder="Last Name" className="text-input-input autofocus" type="text" name="lastName" value={this.state.lastName} onChange={this.handleLNChange} />
-              </div>
-              <div className="dropdown">
-                <button className="btn btn-secondary dropdown-toggle" type="button" id="registerType" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  User Type
+              <div className="dropdown fullWidth">
+                <button className="btn btn-secondary dropdown-toggle fullWidth" type="button" id="registerType" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {this.state.userType}
                 </button>
-                <div className="dropdown-menu" aria-labelledby="registerType">
+                <div className="dropdown-menu fullWidth" aria-labelledby="registerType">
                   <a className="dropdown-item" href="#" onClick={this.handleUserTypeChange}>Donor</a>
-                  <a className="dropdown-item" href="#" onClick={this.handleUserTypeChange}>Hospital</a>
+                  <a className="dropdown-item" href="#"  onClick={this.handleUserTypeChange}>Hospital</a>
                 </div>
               </div>
-              <div className="login-field">
+              {this.state.userType=="Hospital" ? <div className="login-field">
+                <input required placeholder="Name of Hospital" className="text-input-input autofocus" type="text" name="name" value={this.state.name} onChange={this.handleNameChange} />
+              </div> : null}
+              {this.state.userType=="Donor" ? <div className="login-field">
+                <input required placeholder="First Name" className="text-input-input autofocus" type="text" name="firstName" value={this.state.firstName} onChange={this.handleFNChange} />
+              </div> : null}
+              {this.state.userType=="Donor" ? <div className="login-field">
+                <input required placeholder="Last Name" className="text-input-input autofocus" type="text" name="lastName" value={this.state.lastName} onChange={this.handleLNChange} />
+              </div> : null}
+              {this.state.userType=="Donor" ?<div className="login-field">
                 <input required placeholder="Age" className="text-input-input autofocus" type="text" name="age" value={this.state.age} onChange={this.handleAgeChange} />
-              </div>
+              </div> : null}
               <div className="login-field">
                 <input required placeholder="Address" className="text-input-input autofocus" type="text" name="address" value={this.state.address} onChange={this.handleAddressChange} />
               </div>
               <div className="login-field">
                 <input required placeholder="Zip code" className="text-input-input autofocus" type="text" name="zip" value={this.state.zip} onChange={this.handleZipChange} />
+              </div>
+              <div className="login-field">
+                <input required placeholder="Phone Number" className="text-input-input autofocus" type="text" name="phone" value={this.state.phone} onChange={this.handlePhoneChange} />
               </div>
               <div className="remember-me">
                 { this.state.showsAgreementError ? <div className="text-input-error-wrapper">Please agree to the terms of service</div> : null}

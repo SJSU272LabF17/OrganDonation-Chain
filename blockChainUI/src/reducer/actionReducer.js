@@ -2,7 +2,6 @@ const defaultState = {
 	firstName: "",
     lastName: "",
     email: "",
-    userId: 0,
     age:0,
     address:"",
     zip:0,
@@ -17,12 +16,18 @@ export default function actionReducer (state = defaultState, action){
 	const newState = {...state};
 	switch(action.type){
 		case 'loginSuccess':
+			newState.name= action.payload.name;
 			newState.firstName= action.payload.firstName;
 		    newState.lastName= action.payload.lastName;
 		    newState.email= action.payload.email;
-		    newState.userId= action.payload.userId;
+		    newState.age= action.payload.age;
+		    newState.userType= action.payload.userType;
+		    newState.address= action.payload.address;
+		    newState.zip= action.payload.zip;
+		    newState.phone= action.payload.phone;
 			newState.loginFailed= !action.payload.success;
 			newState.loginMsg= action.payload.message;
+			newState.id= action.payload._id;
 			newState.isloggedIn= true;
 			return newState;
 		case 'loginFailed':
@@ -30,16 +35,31 @@ export default function actionReducer (state = defaultState, action){
 			newState.loginMsg= action.payload.message;
 			return newState;
 		case 'registerSuccess':
-			newState.firstName= "";
-		    newState.lastName= "";
-		    newState.email= "";
-		    newState.userId= 0;
+			newState.name= action.payload.name;
+			newState.userType= action.payload.userType;
+		    newState.email= action.payload.email;
 			newState.registerFailed= !action.payload.success;
 			newState.registerMsg= action.payload.message;
 			return newState;
 		case 'registerFailed':
 			newState.registerFailed= true;
 			newState.registerMsg= action.payload.message;
+			return newState;
+		case 'retriveDonorByEmailSuccess':
+			newState.name= action.payload.name;
+			newState.firstName= action.payload.firstName;
+		    newState.lastName= action.payload.lastName;
+		    newState.email= action.payload.email;
+		    newState.age= action.payload.age;
+		    newState.userType= action.payload.userType;
+		    newState.address= action.payload.address;
+		    newState.zip= action.payload.zip;
+		    newState.phone= action.payload.phone;
+			newState.loginFailed= !action.payload.success;
+			newState.loginMsg= action.payload.message;
+			return newState;
+		case 'getHospitalsbyZipSuccess':
+			newState.hospitalByZip = action.payload;
 			return newState;
 		default:
 			return newState;

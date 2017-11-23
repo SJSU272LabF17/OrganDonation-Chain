@@ -160,14 +160,13 @@ class HospitalHome extends Component {
 	}
 
 	componentWillReceiveProps(nextProps){
-		if(sessionStorage.getItem('jwtToken')==null){
+		if(sessionStorage.getItem('userId')==null){
 			this.props.history.push('/login');
 		}
 	}
 
 	handleLogout(){
-		sessionStorage.removeItem('currentFileId');
-		sessionStorage.removeItem('jwtToken');
+		sessionStorage.removeItem('userType');
 		sessionStorage.removeItem('userId');
 		this.setState({showLogout:!this.state.showLogout});
 		this.props.history.push('/login');
