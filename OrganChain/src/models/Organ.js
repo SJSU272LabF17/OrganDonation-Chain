@@ -1,6 +1,6 @@
 var mongoose = require("mongoose");
-var Schema = mongoose.Schema;
-var organSchema = new mongoose.Schema({ 
+Schema = mongoose.Schema;
+var organSchema = new mongoose.Schema({
     name : String,
 	donorId: { type: Schema.Types.ObjectId, ref: 'Donor' },
 	organTestInfo: Object,

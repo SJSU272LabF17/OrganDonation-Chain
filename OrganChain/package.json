@@ -30,7 +30,10 @@
     "mongoose": "^4.13.1",
     "nodemon": "^1.12.1",
     "passport": "^0.4.0",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "babel-cli": "^6.6.5",
+    "babel-preset-stage-0": "*",
+    "babel-preset-es2015": "*"
   },
   "devDependencies": {
     "babel-cli": "^6.6.5",

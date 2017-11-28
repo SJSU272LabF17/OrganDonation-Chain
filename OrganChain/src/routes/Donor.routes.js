@@ -5,5 +5,5 @@ module.exports = function(app) {
     app.post('/donor/login', donor.donorLogin);
     app.get('/donor/:email', donor.getDonorbyEmail);
     app.get('/donor', donor.findAllDonor);    
-    app.put('/donor/:email', donor.updateDonorbyEmail);//not in use
+    // app.put('/donor/:email', donor.updateDonorbyEmail);//not in use
 };

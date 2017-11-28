@@ -1,7 +1,4 @@
-import mongoose from 'mongoose';
 var Donor = require('../models/Donor.js');
-import { donorSchema } from '../models/Donor';
-const DonorModel = mongoose.model('Donor', donorSchema);
 
 /*var passport = require('passport');
 app.use(expressSessions({
@@ -46,7 +43,7 @@ exports.donorLogin = function(req,res) {
         if(!req.body.email) {
             return res.status(400).send({message: 'Donor not found'});
         }
-        DonorModel.findOne({email:req.body.email, password:req.body.password},(err, somedonor) => {
+        Donor.findOne({email:req.body.email, password:req.body.password},(err, somedonor) => {
             if(err){
                 res.status(500).send('Some error occurred while getting the donor');
             } else if(!somedonor){
@@ -58,6 +55,9 @@ exports.donorLogin = function(req,res) {
     //})(req, res);
 };
 
+/**
+ * method used by signup page
+ */
 exports.createDonor = function(req, res) {
     if(!req.body.firstName) {
         return res.status(400).send({message: "Donor name can not be empty"});
@@ -93,8 +93,11 @@ exports.findAllDonor = function(req, res) {
     });
 };
 
+/**
+ * used by donor profile page.
+ */
 exports.getDonorbyEmail = function(req,res) {
-    DonorModel.find({email:req.params.email},(err, somedonor) => {
+    Donor.find({email:req.params.email},(err, somedonor) => {
         if(err){
             res.status(500).send("Some error occurred while retrieving donors info.");
         }
@@ -105,12 +108,12 @@ exports.getDonorbyEmail = function(req,res) {
     });
 };
 
-//not in use
-exports.updateDonorbyEmail = function(req,res) {
-    DonorModel.findOneAndUpdate({email:req.params.email}, req.body, {new:true}, (err, somedonor) => {
-        if(err){
-            res.send(err);
-        }
-        res.json(somedonor);
-    })
-};
+// //not in use
+// exports.updateDonorbyEmail = function(req,res) {
+//     Donor.findOneAndUpdate({email:req.params.email}, req.body, {new:true}, (err, somedonor) => {
+//         if(err){
+//             res.send(err);
+//         }
+//         res.json(somedonor);
+//     })
+// };

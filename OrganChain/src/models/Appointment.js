@@ -5,7 +5,7 @@ var appointmentSchema = new mongoose.Schema({
     sourceHospital: { 
         type: Schema.Types.ObjectId, ref: 'Hospital'
     },
-    donorID: { 
+    donorId: {
         type: Schema.Types.ObjectId, ref: 'Donor' 
     },
     organ: { 

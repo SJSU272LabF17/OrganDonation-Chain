@@ -19,4 +19,4 @@ var recipientSchema = new mongoose.Schema({
     }
 });
 module.exports = mongoose.model('Recipient', recipientSchema);
-
+// when unos will make an appointment, they will create an appointment for transplant and update the recipient with the organ id.
