@@ -8,6 +8,9 @@ var appointmentSchema = new mongoose.Schema({
     donorId: {
         type: Schema.Types.ObjectId, ref: 'Donor' 
     },
+    recId: {
+        type: Schema.Types.ObjectId, ref: 'Recipient'
+    },
     organ: { 
         type: Schema.Types.ObjectId, ref: 'Organ' 
     },     //If you know how to use enum, do that.
