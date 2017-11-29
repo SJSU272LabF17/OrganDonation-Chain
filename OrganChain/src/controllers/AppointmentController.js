@@ -128,7 +128,7 @@ exports.scheduledTestingAppts = function (req, res) {
 exports.scheduledTransplantAppts = function (req, res) {
     var sql = Appointment.find().where('type').equals('transplant');
 
-    sql.populate("donorId").populate("organ").populate("sourceHospital")
+    sql.populate("recId").populate("organ").populate("sourceHospital")
         .exec(function(err, appts){
             if(err) {
                 res.status(500).send({message: "Some error occurred while retrieving appts."});
