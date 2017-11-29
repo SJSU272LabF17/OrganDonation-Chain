@@ -33,7 +33,9 @@ exports.update = function(req, res) {
         res.status(400).send({message : "no organId passed"});
     }
     var organQuery = Organ.findById(req.params.organId);
+    console.log(req.params.organId);
     organQuery.exec(function(err, organ) {
+        console.log(req.params.organ);
         organ.organTestInfo = req.body.organTestInfo;
         organ.sourceHospital = req.body.sourceHospital;
         var promise = organ.save();

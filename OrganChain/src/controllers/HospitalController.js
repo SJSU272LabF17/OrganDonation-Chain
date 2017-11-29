@@ -12,7 +12,7 @@ exports.hospitalLogin = function(req,res) {
             if(!someHospital){
                 res.json('Hospital not found');
             }
-            res.status(200).send(someHospital);
+            res.status(200).send(someHospital[0]);
         });
 };
 
@@ -63,7 +63,7 @@ exports.getHospitalsByZip = function(req, res) {
         if(err) {
             res.status(500).send({message: "Some error occurred while updating the hospital."});
         } else {
-            hosps.push(hospitals);
+            hosps=hospitals;
             for (var i = hosps.length - 1; i >= 0; i--) {
                 if(hosps[i].chekupdate){
                     var adjustedChekUpDate = updatedTime(hosps[i]);

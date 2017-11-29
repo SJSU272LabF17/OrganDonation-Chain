@@ -101,7 +101,7 @@ class UserHome extends Component {
   }
 
   hospitalSelectedForCheckUp(hospital){
-  	this.props.dispatch(this.props.hospitalSelectedForCheckUp(hospital));
+  	this.props.dispatch(this.props.hospitalSelectedForCheckUp(hospital, this.props));
   }
 
   render() {
@@ -111,7 +111,7 @@ class UserHome extends Component {
 			    <Tabs className="tabs tabs-1">
 			        <nav id="sidebar">
 			            <div className="sidebar-header">
-			                <h3>Life Line</h3>
+			                <h3>Organ Chain</h3>
 			            </div>
 			            <ul className="list-unstyled components">
 			                <li className="active">
@@ -226,7 +226,7 @@ class UserHome extends Component {
 									      <small><span>zip:</span><span>{step.zip}</span></small>
 									    </div>
 									    <p className="mb-1">{step.address}</p>
-									    <small><span>Choose the date and time: </span><span>{step.chekUpDate}</span></small>
+									    <small><span>Slot Available: </span><span>{step.chekUpDate}</span></small>
 									    <button type="button" className="btn btn-primary" onClick={this.hospitalSelectedForCheckUp.bind(this, step)}>Choose</button>
 									</div>
 				            	) : null}

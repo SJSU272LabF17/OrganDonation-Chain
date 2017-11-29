@@ -58,7 +58,7 @@
 }
 .App-header{
   margin: 13px auto;
-  width: 330px;
+  width: 355px;
   position: relative;
   height: 46px;
   text-align: left;
@@ -699,6 +699,7 @@ a.article, a.article:hover {
   padding: 20px;
 }
 .patientBox{
+  padding-bottom: 30px;
 }
 .patientBoxInner{
   width: 100%;
@@ -710,7 +711,7 @@ a.article, a.article:hover {
   height: 100px;
 }
 .organToOffer{
-  height: 80px;
+  height: 79px;
 }
 .unos{
   margin-left: 20px;
