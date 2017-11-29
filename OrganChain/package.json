@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/SJSU272LabF17/Project-Team-21#readme",
   "dependencies": {
-    "babel-preset-stage-0": "^6.24.1",
+    "babel-preset-stage-0": "*",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.2",
     "connect-mongo": "^2.0.0",
@@ -32,7 +32,6 @@
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "babel-cli": "^6.6.5",
-    "babel-preset-stage-0": "*",
     "babel-preset-es2015": "*"
   },
   "devDependencies": {

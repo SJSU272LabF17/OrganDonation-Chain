@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import {} from '../actions/allActions';
 import Collapsible from 'react-collapsible';
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux';
+import { retriveTestingAppts, handleApproveOrgan, registerRecepeint, retriveTransplantAppts, handleTransplantOrgan } from '../actions/allActions';
 
 const mapStateToProps = (state) => {
   return {
@@ -10,12 +11,14 @@ const mapStateToProps = (state) => {
     firstName: state.actionReducer.firstName,
     lastName: state.actionReducer.lastName,
     email: state.actionReducer.email,
-    isloggedIn: state.actionReducer.isloggedIn
+    isloggedIn: state.actionReducer.isloggedIn,
+    testingAppts: state.actionReducer.testingAppts,
+    transplantAppts: state.actionReducer.transplantAppts
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
-  let actions = {};
+  let actions = {retriveTestingAppts, handleApproveOrgan, registerRecepeint, retriveTransplantAppts, handleTransplantOrgan};
   return { ...actions, dispatch };
 }
 
@@ -40,15 +43,17 @@ class HospitalHome extends Component {
 			class2Protein:"",
 			lymphocytes:"",
 			HLA:"",
+			organToOffer:"",
 			class2Antigen:"",
 			organSpecificInfo:"",
 			doctorNotes:"",
-			tranplantCompleted: false
+			tranplantCompleted: false,
+			currentOrgan:""
 	     }
     	this.handleLogout = this.handleLogout.bind(this);
     	this.handleDropdownClick = this.handleDropdownClick.bind(this);
     	this.handleApproveOrgan = this.handleApproveOrgan.bind(this);
-
+    	this.handleTransplantOrgan = this.handleTransplantOrgan.bind(this);
 	    this.handleFNChange = this.handleFNChange.bind(this);
 	    this.handleLNChange = this.handleLNChange.bind(this);
 	    this.handleAgeChange = this.handleAgeChange.bind(this);
@@ -68,7 +73,10 @@ class HospitalHome extends Component {
 	    this.handleDoctorNotesChange = this.handleDoctorNotesChange.bind(this);
 	    this.handleOrganToOfferChange = this.handleOrganToOfferChange.bind(this);
 	    this.handleHospitalIdChange = this.handleHospitalIdChange.bind(this);
-	    this.handleTransplantOrgan = this.handleTransplantOrgan.bind(this);
+	    this.setCurrentOrgan = this.setCurrentOrgan.bind(this);
+	    this.retriveTestingAppts = this.retriveTestingAppts.bind(this);
+	    this.registerRecepeint = this.registerRecepeint.bind(this);
+	    this.retriveTransplantAppts = this.retriveTransplantAppts.bind(this);
 	}
 
 	handleDropdownClick(e){
@@ -80,7 +88,7 @@ class HospitalHome extends Component {
     }
 
     handleApproveOrgan(){
-    	//this.props.dispatch(this.props.handleApproveOrgan(this.state));
+    	this.props.dispatch(this.props.handleApproveOrgan(this.state));
     }
 
 	handleFNChange(event){
@@ -156,7 +164,7 @@ class HospitalHome extends Component {
     }
 
 	componentDidMount(){
-		//this.props.dispatch(this.props.retriveRecentFileList(this.props));
+		this.props.dispatch(this.props.retriveTestingAppts(this.props));
 	}
 
 	componentWillReceiveProps(nextProps){
@@ -174,7 +182,23 @@ class HospitalHome extends Component {
 
 	handleTransplantOrgan(){
 		this.setState({tranplantCompleted:true});
-		//this.props.dispatch(this.props.handleTransplantOrgan(this.state));
+		this.props.dispatch(this.props.handleTransplantOrgan(this.state));
+	}
+
+	setCurrentOrgan(tempAppointment){
+		this.setState({currentOrgan:tempAppointment.organ._id, appointmentId:tempAppointment._id});
+	}
+
+	retriveTestingAppts(){
+		this.props.dispatch(this.props.retriveTestingAppts(this.props));	
+	}
+
+	registerRecepeint(){
+		this.props.dispatch(this.props.registerRecepeint(this.state));
+	}
+
+	retriveTransplantAppts(){
+		this.props.dispatch(this.props.retriveTransplantAppts(this.props));	
 	}
 
 	render() {
@@ -184,16 +208,16 @@ class HospitalHome extends Component {
 			        <Tabs className="tabs tabs-1">
 				        <nav id="sidebar">
 				            <div className="sidebar-header">
-				                <h3>Life Line</h3>
+				                <h3>Organ Chain</h3>
 				            </div>
 				            <ul className="list-unstyled components">
-				                <li className="active">
+				                <li className="active" onClick={this.retriveTestingAppts}>
 				                    <TabLink to="section-checkUp"><a href="#section-checkUp" data-toggle="tab" className="tab-toggle active">Appointments For Organ Test</a></TabLink>
 				                </li>
 				                <li>
 				                    <TabLink to="section-recipient"><a href="#section-recipient" data-toggle="tab" className="tab-toggle">Register Recipients</a></TabLink>
 				                </li>
-				                <li>
+				                <li onClick={this.retriveTransplantAppts}>
 				                    <TabLink to="section-transplant"><a href="#section-transplant" data-toggle="tab" className="tab-toggle">Appointments for Transplant</a></TabLink>
 				                </li>
 				            </ul>
@@ -219,16 +243,20 @@ class HospitalHome extends Component {
 					                </div>
 					            </nav>
 					            <div className="row">
-						            <div className="col-md-4 patientBox">
-						            	<div className="patientBoxInner">
-							            	<div className="boxTitle" data-toggle="modal" data-target="#organDetailsModal">Amy</div>
-							            	<div className="">
-								            	<img className="patientBoxIcons" data-toggle="modal" data-target="#organDetailsModal" src="images/registered.png" alt="userIcon" />
-								            	{this.state.organToOffer ? <img height="80px" data-toggle="modal" data-target="#chekUpDetailsModal" className="patientBoxIcons organToOffer" src="images/registered1.png" alt="userIcon" /> : null}
-								            	<img className={"patientBoxIcons float-right "+ (this.state.organToOffer ? 'iconDisabled' :null )} data-toggle="modal" data-target="#verfiyModal" src="images/add.png" alt="userIcon" />
-								            </div>
-								        </div>
-					                </div>
+					            	{this.props.testingAppts && this.props.testingAppts.length>0 ? this.props.testingAppts.map(step =>
+							            
+								            <div className="col-md-4 patientBox">
+								            	<div className="patientBoxInner">
+									            	<div className="boxTitle" data-toggle="modal" data-target="#organDetailsModal">{step.donorId.firstName+" "+step.donorId.lastName}</div>
+									            	<div className="">
+										            	<img className="patientBoxIcons" data-toggle="modal" data-target="#organDetailsModal" src="images/registered.png" alt="userIcon" />
+										            	{this.state.organToOffer ? <img height="80px" data-toggle="modal" data-target="#chekUpDetailsModal" className="patientBoxIcons organToOffer" src="images/registered1.png" alt="userIcon" /> : null}
+										            	<img className={"patientBoxIcons float-right "+ (this.state.organToOffer ? 'iconDisabled' :null )} data-toggle="modal" data-target="#verfiyModal" src="images/add.png" alt="userIcon" onClick={this.setCurrentOrgan.bind(this, step)}/>
+										            </div>
+										        </div>
+							                </div> 
+							                )
+						            : null }
 					            </div>
 				        	</TabContent>
 				        	<TabContent for="section-recipient">
@@ -254,72 +282,72 @@ class HospitalHome extends Component {
 						            <Collapsible className="col-md-12 text-right" trigger="Personal Details">
 							            <div className="row">
 						                    <p className="col-md-2 text-right">First Name:</p>
-						                    <input className="col-md-10 text-left text-input-input autofocus" type="text" value={this.props.lastName} onChange={this.handleLNChange} />
+						                    <input className="col-md-10 text-left text-input-input autofocus" type="text" onChange={this.handleLNChange} />
 						                </div>
 							            <div className="row">
 						                    <p className="col-md-2 text-right">Last Name:</p>
-						                    <input className="col-md-10 text-left text-input-input autofocus" type="text" value={this.props.lastName} onChange={this.handleLNChange} />
+						                    <input className="col-md-10 text-left text-input-input autofocus" type="text" onChange={this.handleLNChange} />
 						                </div>
 							            <div className="row">
 						                    <p className="col-md-2 text-right">Age:</p>
-						                    <input className="col-md-10 text-left text-input-input autofocus" type="text" value={this.props.age} onChange={this.handleAgeChange} />
+						                    <input className="col-md-10 text-left text-input-input autofocus" type="text" onChange={this.handleAgeChange} />
 						                </div>
 							            <div className="row">
 						                    <p className="col-md-2 text-right">Address:</p>
-						                    <input className="col-md-10 text-left text-input-input autofocus" type="text" value={this.props.address} onChange={this.handleAddressChange} />
+						                    <input className="col-md-10 text-left text-input-input autofocus" type="text" onChange={this.handleAddressChange} />
 						                </div>
 							            <div className="row">
 						                    <p className="col-md-2 text-right">Email:</p>
-						                    <input className="col-md-10 text-left text-input-input autofocus" type="text" value={this.props.email}  onChange={this.handleEmailChange} />
+						                    <input className="col-md-10 text-left text-input-input autofocus" type="text" onChange={this.handleEmailChange} />
 						                </div>
 							            <div className="row">
 						                    <p className="col-md-2 text-right">Zip code:</p>
-						                    <input className="col-md-10 text-left text-input-input autofocus" type="text" value={this.props.zip}  onChange={this.handleZipChange} />
+						                    <input className="col-md-10 text-left text-input-input autofocus" type="text" onChange={this.handleZipChange} />
 						                </div>
 						            </Collapsible>
 									<Collapsible className="col-md-12 text-right" trigger="Medical Details">
 										<div className="row">
 										    <p className="col-md-2 text-right">Organ Needed:</p>
-										    <input className="col-md-10 text-left text-input-input autofocus" type="text" value={this.props.organNeeded}  onChange={this.handleOrganNeededChange} />
+										    <input className="col-md-10 text-left text-input-input autofocus" type="text" onChange={this.handleOrganNeededChange} />
 										</div>
 										<div className="row">
 										    <p className="col-md-2 text-right">Person Status:</p>
-										    <input className="col-md-10 text-left text-input-input autofocus" type="text" value={this.props.personStatus}  onChange={this.handlePersonStatusChange} />
+										    <input className="col-md-10 text-left text-input-input autofocus" type="text" onChange={this.handlePersonStatusChange} />
 										</div>
 										<div className="row">
 										    <p className="col-md-2 text-right">Blood Type:</p>
-										    <input className="col-md-10 text-left text-input-input autofocus" type="text" value={this.props.bloodType}  onChange={this.handleBloodTypeChange} />
+										    <input className="col-md-10 text-left text-input-input autofocus" type="text"  onChange={this.handleBloodTypeChange} />
 										</div>
 										<div className="row">
 										    <p className="col-md-2 text-right">Class1 Protein:</p>
-										    <input className="col-md-10 text-left text-input-input autofocus" type="text" value={this.props.class1Protein}  onChange={this.handleClass1ProteinChange} />
+										    <input className="col-md-10 text-left text-input-input autofocus" type="text"  onChange={this.handleClass1ProteinChange} />
 										</div>
 										<div className="row">
 										    <p className="col-md-2 text-right">Class2 Protein:</p>
-										    <input className="col-md-10 text-left text-input-input autofocus" type="text" value={this.props.class2Protein}  onChange={this.handleClass2ProteinChange} />
+										    <input className="col-md-10 text-left text-input-input autofocus" type="text" onChange={this.handleClass2ProteinChange} />
 										</div>
 										<div className="row">
 										    <p className="col-md-2 text-right">Lymphocytes:</p>
-										    <input className="col-md-10 text-left text-input-input autofocus" type="text" value={this.props.lymphocytes}  onChange={this.handleLymphocytesChange} />
+										    <input className="col-md-10 text-left text-input-input autofocus" type="text" onChange={this.handleLymphocytesChange} />
 										</div>
 										<div className="row">
 										    <p className="col-md-2 text-right">HLA:</p>
-										    <input className="col-md-10 text-left text-input-input autofocus" type="text" value={this.props.HLA}  onChange={this.handleHLAChange} />
+										    <input className="col-md-10 text-left text-input-input autofocus" type="text" onChange={this.handleHLAChange} />
 										</div>
 										<div className="row">
 										    <p className="col-md-2 text-right">Class2 Antigen:</p>
-										    <input className="col-md-10 text-left text-input-input autofocus" type="text" value={this.props.class2Antigen}  onChange={this.handleClass2AntigenChange} />
+										    <input className="col-md-10 text-left text-input-input autofocus" type="text" onChange={this.handleClass2AntigenChange} />
 										</div>
 										<div className="row">
 										    <p className="col-md-2 text-right">Organ Specific Info:</p>
-										    <input className="col-md-10 text-left text-input-input autofocus" type="text" value={this.props.organSpecificInfo}  onChange={this.handleOrganSpecificInfoChange} />
+										    <input className="col-md-10 text-left text-input-input autofocus" type="text" onChange={this.handleOrganSpecificInfoChange} />
 										</div>
 										<div className="row">
 										    <p className="col-md-2 text-right">Doctor Notes:</p>
-										    <input className="col-md-10 text-left text-input-input autofocus" type="text" value={this.props.doctorNotes}  onChange={this.handleDoctorNotesChange} />
+										    <input className="col-md-10 text-left text-input-input autofocus" type="text" onChange={this.handleDoctorNotesChange} />
 										</div>
 									</Collapsible>
-					                <input type="submit" className="btn login-button" value="Register Recipient"/>
+					                <input type="submit" className="btn login-button" value="Register Recipient" onClick={this.registerRecepeint} />
 					        	</div>
 				        	</TabContent>
 				        	<TabContent for="section-transplant">
@@ -343,18 +371,20 @@ class HospitalHome extends Component {
 						                </div>
 						            </nav>
 						            <div className="row">
-							            <div className="col-md-5 patientBox">
-							            	<div className={"patientBoxInner "+ (this.state.tranplantCompleted ? 'iconDisabled' :null )}>
-								            	<div className="boxTitle" data-toggle="modal" data-target="#organDetailsModal">Amy</div>
-								            	<div className="">
-									            	<img className="patientBoxIcons" data-toggle="modal" data-target="#organDetailsModal" src="images/registered.png" alt="userIcon" />
-									            	<img height="80px" className="patientBoxIcons organToOffer" data-toggle="modal" data-target="#chekUpDetailsModal" src="images/registered1.png" alt="userIcon" />
-									            	<img height="80px" className="patientBoxIcons unos" data-toggle="modal" data-target="#recepientDetailsModal" src="images/unos.png" alt="userIcon" />
-									            	{this.state.tranplantCompleted ? <img className="patientBoxIcons organToOffer" src="images/logo.jpg" alt="userIcon" /> :
-									            		<img className="patientBoxIcons float-right" data-toggle="modal" data-target="#tranplantModal" src="images/add.png" alt="userIcon" />}
-									            </div>
-									        </div>
-						                </div>
+						            	{this.props.transplantAppts && this.props.transplantAppts.length>0 ? this.props.transplantAppts.map(step =>
+								            <div className="col-md-5 patientBox">
+								            	<div className={"patientBoxInner "+ (this.state.tranplantCompleted ? 'iconDisabled' :null )}>
+									            	<div className="boxTitle" data-toggle="modal" data-target="#organDetailsModal">{step.donorId.firstName+" "+step.donorId.lastName}</div>
+									            	<div className="">
+										            	<img className="patientBoxIcons" data-toggle="modal" data-target="#organDetailsModal" src="images/registered.png" alt="userIcon" />
+										            	<img height="80px" className="patientBoxIcons organToOffer" data-toggle="modal" data-target="#chekUpDetailsModal" src="images/registered1.png" alt="userIcon" />
+										            	<img height="80px" className="patientBoxIcons unos" data-toggle="modal" data-target="#recepientDetailsModal" src="images/unos.png" alt="userIcon" />
+										            	{this.state.tranplantCompleted ? <img className="patientBoxIcons organToOffer" src="images/logo.jpg" alt="userIcon" /> :
+										            		<img className="patientBoxIcons float-right" data-toggle="modal" data-target="#tranplantModal" src="images/add.png" alt="userIcon" onClick={this.setCurrentOrgan.bind(this, step)}/>}
+										            </div>
+										        </div>
+							                </div>)
+							            :null}
 						            </div>
 					        	</div>
 				        	</TabContent>
@@ -369,8 +399,6 @@ class HospitalHome extends Component {
 			                    <button type="button" className="close" data-dismiss="modal">&times;</button>
 			                </div>
 			                <div className="modal-body">
-			                    Hospital ID:
-			                    <input className="text-input-input autofocus" type="text" value={this.props.HospitalId} onChange={this.handleHospitalIdChange} /> 
 			                    Organ to Offer:
 			                    <input className="text-input-input autofocus" type="text" value={this.props.organToOffer} onChange={this.handleOrganToOfferChange} /> 
 			                    Blood Type:
@@ -406,8 +434,6 @@ class HospitalHome extends Component {
 			                </div>
 			                <div className="modal-body">
 			                	<Collapsible className="col-md-12 text-right" trigger="Generic Details">
-				                    Hospital ID:
-				                    <input className="text-input-input autofocus" type="text" value={this.props.HospitalId} onChange={this.handleHospitalIdChange} /> 
 				                    Organ to tranplant:
 				                    <input className="text-input-input autofocus" type="text" value={this.props.organToOffer} onChange={this.handleOrganToOfferChange} /> 				                    
 					            </Collapsible>

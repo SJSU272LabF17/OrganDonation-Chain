@@ -5,6 +5,7 @@ exports.create = function(req, res) {
     if(!req.body.name) {
         return res.status(400).send({message: "Recipient name can not be empty"});
     }
+    console.log(req.body.name+"sfgb");
     var recipientInfo = new Recipient({name: req.body.name, age: req.body.age, organ: req.body.organ,
         hospital: req.body.hospital, email: req.body.email, address: req.body.address, phone: req.body.phone,
         status: req.body.status, testInfo: req.body.testInfo});

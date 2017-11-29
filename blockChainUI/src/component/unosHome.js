@@ -184,7 +184,7 @@ class UnosHome extends Component {
 			        <Tabs className="tabs tabs-1">
 				        <nav id="sidebar">
 				            <div className="sidebar-header">
-				                <h3>Life Line</h3>
+				                <h3>Organ Chain</h3>
 				            </div>
 				            <ul className="list-unstyled components">
 				                <li className="active">

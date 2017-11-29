@@ -19,18 +19,15 @@ exports.create = function(req, res) {
         );
     }
     var promise = appointmentSave(
-                                  req.body.date,
-                                  req.body.sourceHospital, 
-                                  req.body.donorId,
-                                  req.body.organ,
-                                  'active',
-                                  'testing'
-                                );
+      req.body.date,
+      req.body.sourceHospital, 
+      req.body.donorId,
+      req.body.organ,
+      'active',
+      'testing'
+    );
     promise.then(appointment => {
-        console.log("success");
-        console.log(appointment);
         Hospital.findById(req.body.sourceHospital, function(err, hospital) {
-
             hospital.chekUpDate = new Date(hospitalController.updatedHospitalTime(hospital.chekUpDate));
             var hospitalPromise = hospital.save();
             hospitalPromise.then(hospital => {
@@ -131,7 +128,7 @@ exports.scheduledTestingAppts = function (req, res) {
 exports.scheduledTransplantAppts = function (req, res) {
     var sql = Appointment.find().where('type').equals('transplant');
 
-    sql.populate("recId").populate("organ").populate("sourceHospital")
+    sql.populate("donorId").populate("organ").populate("sourceHospital")
         .exec(function(err, appts){
             if(err) {
                 res.status(500).send({message: "Some error occurred while retrieving appts."});

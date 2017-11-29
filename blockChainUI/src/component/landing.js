@@ -74,7 +74,7 @@ export default class Landing extends Component {
 			<Element name="home" className="element">
 				<section className="hero">
 					<div className="background-image"></div>
-					<h1>Life Line</h1>
+					<h1>Organ Chain</h1>
 					<h3>A gift that lives on.</h3>
 					<a onClick={() => this.props.history.push('/login')} className="btn">I am in!</a>
 				</section>
@@ -97,7 +97,7 @@ export default class Landing extends Component {
 			<Element name="services" className="element">
 				<section className="features">
 					<h3 className="title">Services</h3>
-					<p>Life Line is dedicated to the prevention and treatment of illness and enhancing the greater health of individuals, families and communities throughout USA.</p>
+					<p>Organ Chain is dedicated to the prevention and treatment of illness and enhancing the greater health of individuals, families and communities throughout USA.</p>
 					<hr/>
 
 					<ul className="grid">
@@ -125,7 +125,7 @@ export default class Landing extends Component {
 					<p className="quote">This is truly awarding work help saving lives, advocate for recipients awaiting organ or tissue transplant.</p>
 					<p className="author">— Patrick Farrell</p>
 
-					<p className="quote">Thanks to Life Line, now i have the opportunity to see the world and all its beauty.</p>
+					<p className="quote">Thanks to Organ Chain, now i have the opportunity to see the world and all its beauty.</p>
 					<p className="author">— George Smith</p>
 
 					<p className="quote">People of all ages and medical histories should consider themselves potential donors, it will save lot of lives.</p>

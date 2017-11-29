@@ -147,7 +147,7 @@ class Login extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <img className="logo" src="images/logo.jpg" alt="logo"/><div className="logoTitle">Life Line</div>
+          <img className="logo" src="images/logo.jpg" alt="logo"/><div className="logoTitle">Organ Chain</div>
         </header>
         <div className="row mainBox">
           <div className="col-md-6">

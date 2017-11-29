@@ -9,7 +9,9 @@ const defaultState = {
     loginMsg:"",
     registerFailed:false,
     registerMsg:"",
-    isloggedIn:false
+    isloggedIn:false,
+    testingAppts:[],
+    transplantAppts:[]
 }
 
 export default function actionReducer (state = defaultState, action){
@@ -60,6 +62,19 @@ export default function actionReducer (state = defaultState, action){
 			return newState;
 		case 'getHospitalsbyZipSuccess':
 			newState.hospitalByZip = action.payload;
+			return newState;
+		case 'registerDonorOrganSuccess':
+			newState.organId = action.payload.organId;
+			return newState;
+		case 'retriveTestingApptsSuccess':
+			newState.testingAppts = action.payload;
+			return newState;
+		case 'retriveTransplantApptsSuccess':
+			newState.transplantAppts = action.payload;
+			return newState;
+		case 'handleApproveOrganSuccess':
+			return newState;
+		case 'handleTransplantOrganSuccess':
 			return newState;
 		default:
 			return newState;

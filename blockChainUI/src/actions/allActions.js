@@ -89,6 +89,7 @@ export function registerDonorOrgan(state){
     		donorId: sessionStorage.getItem('userId')
 		};
 		return axios.post("http://localhost:3001/organ/", temp).then((response) => {
+			 sessionStorage.setItem('organId', response.data._id);
 			 dispatch({type:"registerDonorOrganSuccess", payload: response.data})
 		}).catch((err) => {
 			 dispatch({type:"registerDonorOrganFailed", payload: err.response.data})
@@ -106,12 +107,115 @@ export function getHospitalsByZip(state){
 	}
 }
 
-export function hospitalSelectedForCheckUp(hospital){
+export function hospitalSelectedForCheckUp(hospital, state){
 	return function(dispatch){
-		return axios.get("http://localhost:3001/hospital/"+parseInt(hospital.name)).then((response) => {
-			 dispatch({type:"getHospitalsbyZipSuccess", payload: response.data})
+		let temp = {
+			organ : sessionStorage.getItem('organId'),
+			sourceHospital : hospital._id,
+			donorId: sessionStorage.getItem('userId'),
+			date : hospital.chekUpDate
+		};
+		return axios.post("http://localhost:3001/appointment/donor", temp).then((response) => {
+			 dispatch({type:"hospitalSelectedForCheckUpSuccess", payload: response.data})
 		}).catch((err) => {
-			 dispatch({type:"getHospitalsbyZipFailed", payload: err.response.data})
+			 dispatch({type:"hospitalSelectedForCheckUpFailed", payload: err.response.data})
 		})		
+	}
+}
+
+export function retriveTestingAppts(state){
+	return function(dispatch){
+		return axios.get("http://localhost:3001/appointment/testing").then((response) => {
+			 dispatch({type:"retriveTestingApptsSuccess", payload: response.data})
+		}).catch((err) => {
+			 dispatch({type:"retriveTestingApptsFailed", payload: err.response.data})
+		})
+	}
+}
+
+
+export function retriveTransplantAppts(){
+	return function(dispatch){
+		return axios.get("http://localhost:3001/appointment/transplant").then((response) => {
+			 dispatch({type:"retriveTransplantApptsSuccess", payload: response.data})
+		}).catch((err) => {
+			 dispatch({type:"retriveTransplantApptsFailed", payload: err.response.data})
+		})
+	}
+}
+
+export function handleApproveOrgan(state){
+	return function(dispatch){
+		var organTestInfoTemp = {
+			personStatus:state.personStatus,
+			bloodType:state.bloodType,
+			class1Protein:state.class1Protein,
+			class2Protein:state.class2Protein,
+			lymphocytes:state.lymphocytes,
+			HLA:state.HLA,
+			organToOffer:state.organToOffer,
+			class2Antigen:state.class2Antigen,
+			organSpecificInfo:state.organSpecificInfo,
+			doctorNotes:state.doctorNotes
+		}
+		var temp = {
+			organTestInfo : organTestInfoTemp,
+	        sourceHospital : sessionStorage.getItem('userId'),
+	        appointmentId : state.appointmentId
+		}
+		return axios.put("http://localhost:3001/organ/"+state.currentOrgan, temp).then((response) => {
+			 dispatch({type:"handleApproveOrganSuccess", payload: response.data})
+		}).catch((err) => {
+			 dispatch({type:"handleApproveOrganFailed", payload: err.response.data})
+		})
+	}
+}
+
+export function handleTransplantOrgan(state){
+	return function(dispatch){
+		var temp = {
+	        targetHospital : sessionStorage.getItem('userId'),
+	        appointmentId : state.appointmentId,
+	        organ: state.currentOrgan
+		}
+		return axios.post("http://localhost:3001/appointment/complete", temp).then((response) => {
+			 dispatch({type:"handleTransplantOrganSuccess", payload: response.data})
+		}).catch((err) => {
+			 dispatch({type:"handleTransplantOrganFailed", payload: err.response.data})
+		})
+	}
+}
+
+export function registerRecepeint(state){
+	return function(dispatch){
+		var organTestInfoTemp = {
+			personStatus:state.personStatus,
+			bloodType:state.bloodType,
+			class1Protein:state.class1Protein,
+			class2Protein:state.class2Protein,
+			lymphocytes:state.lymphocytes,
+			HLA:state.HLA,
+			organToOffer:state.organToOffer,
+			class2Antigen:state.class2Antigen,
+			organSpecificInfo:state.organSpecificInfo,
+			doctorNotes:state.doctorNotes
+		}
+		var temp = {
+			name: state.firstName+" "+state.lastName,
+		    age: state.age,
+		    organ: state.organNeeded,
+		    hospital: sessionStorage.getItem('userId'),
+		    email: state.email,
+		    address: {
+		        street: state.address,
+		        zip: state.zip
+		    },
+			testInfo : organTestInfoTemp
+		}
+		return axios.post("http://localhost:3001/recipient/", temp).then((response) => {
+			 dispatch({type:"registerRecepeintSuccess", payload: response.data})
+		}).catch((err) => {
+			 dispatch({type:"registerRecepeintFailed", payload: err.response.data})
+		})
 	}
 }
