@@ -28,6 +28,17 @@ exports.findAll = function(req, res) {
     });
 };
 
+exports.findAllUserOrgans = function(req, res) {
+    var sql = Organ.find().where('donorId').equals(req.params.donorId);
+    sql.exec(function(err, organs){
+            if(err) {
+                res.status(500).send({message: "Some error occurred while retrieving appts."});
+            } else {
+                res.send(organs);
+            }
+        });
+};
+
 exports.update = function(req, res) {
     if (req.params.organId == null) {
         res.status(400).send({message : "no organId passed"});

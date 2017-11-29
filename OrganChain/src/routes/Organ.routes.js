@@ -4,5 +4,6 @@ module.exports = function(app) {
     app.post('/organ', organ.createOrgan);
     app.put('/organ/:organId', organ.update);
     app.get('/organ', organ.findAll);
+    app.get('/organ/:donorId', organ.findAllUserOrgans);
     // app.route('/organU/:email').get(organ.getOrganByEmail).post(organ.organCreate);
 };
