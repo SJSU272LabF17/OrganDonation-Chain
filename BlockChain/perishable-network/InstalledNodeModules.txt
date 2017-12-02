@@ -1,0 +1,10 @@
+ npm install -g composer-cli
+ npm install -g generator-hyperledger-composer
+ npm install -g composer-rest-server
+ npm install -g yo
+
+ composer archive create --sourceType dir --sourceName . -a ./dist/perishable-network.bna
+
+ composer network deploy -a perishable-network.bna -p hlfv1 -i PeerAdmin -s randomString -A admin -S
+
+ 

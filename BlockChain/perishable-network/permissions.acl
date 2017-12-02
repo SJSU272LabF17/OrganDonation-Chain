@@ -1,0 +1,24 @@
+//Works Top to Bottom
+rule AllAccess {
+     description: "AllAccess - grant everything to everybody."
+     participant: "org.hyperledger.composer.system.Participant"
+     operation: ALL
+     resource: "org.hyperledger.composer.system.**"
+     action: ALLOW
+}
+
+rule NetworkAdminUser{
+    description: "Description of the Basic ACL rule"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "**"
+    action: ALLOW
+}
+
+rule NetworkAdminSystem{
+    description: "Description of the Basic ACL rule"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}

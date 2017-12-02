@@ -1,0 +1,69 @@
+namespace org.organchain
+abstract asset Appointment identified by AppointmentId {
+  o String AppointmentId
+  --> Hospital hospital
+  o Status status
+  o DateTime appointmentTIme
+}
+
+asset testingAppointment extends Appointment{
+  o String organname
+  --> Donor donor
+}
+
+asset transplantAppointment extends Appointment{
+  o String organID
+  --> Recepient recepient
+}
+
+asset Organ identified by OrganID {
+  o String OrganID
+  --> Donor donor
+  --> Recepient recepient optional
+}
+concept contactInfo{
+  o String Name
+  o Address address
+  o String Email
+  o String Phone
+}
+
+concept Address {
+  o String line1
+  o String line2 optional
+  o String city
+  o String State
+  o Integer Zip
+}
+
+participant Donor identified by DonorID {
+  o String DonorID
+  o String Name
+  o contactInfo info
+  o String organName
+  o String AppointmentId
+}
+
+enum Status {
+  o OPEN
+  o CLOSED
+}
+
+participant Recepient identified by RecepientID {
+  o String RecepientID
+  o String Name
+  o contactInfo info
+  o String organName
+  o String AppointmentId
+  o String TestData
+}
+
+participant Hospital identified by HospitalID {
+  o String HospitalID
+  o String Name
+  o contactInfo info
+}
+
+participant Unos identified by UnosID {
+  o String UnosID
+}
