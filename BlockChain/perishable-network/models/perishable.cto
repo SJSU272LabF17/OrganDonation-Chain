@@ -1,69 +1,65 @@
 namespace org.organchain
-abstract asset Appointment identified by AppointmentId {
-  o String AppointmentId
-  --> Hospital hospital
-  o Status status
-  o DateTime appointmentTIme
-}
 
-asset testingAppointment extends Appointment{
-  o String organname
-  --> Donor donor
-}
-
-asset transplantAppointment extends Appointment{
-  o String organID
-  --> Recepient recepient
-}
-
-asset Organ identified by OrganID {
-  o String OrganID
-  --> Donor donor
-  --> Recepient recepient optional
-}
-concept contactInfo{
-  o String Name
-  o Address address
-  o String Email
-  o String Phone
-}
-
-concept Address {
-  o String line1
-  o String line2 optional
-  o String city
-  o String State
-  o Integer Zip
-}
-
-participant Donor identified by DonorID {
-  o String DonorID
-  o String Name
-  o contactInfo info
+asset Organ identified by organId {
+  o String organId
   o String organName
-  o String AppointmentId
+  o String organTestInfo optional
+  --> Donor donor
+  --> Recipient recipient optional
+  --> Hospital sourceHospital optional
+  --> Hospital destHospital optional
+  o Status status
+}
+
+participant Donor identified by donorId {
+  o String donorId
+  o String firstName
+  o String lastName
+  o String ssn
+  o Integer age
+  o String email
+  o String address
+  o Integer zip
+  o String organName
 }
 
 enum Status {
-  o OPEN
-  o CLOSED
+  o OFFERED
+  o TESTED
+  o MATCHED
+  o TRANSPLANT
 }
 
-participant Recepient identified by RecepientID {
-  o String RecepientID
-  o String Name
-  o contactInfo info
+participant Recipient identified by recipientId {
+  o String recipientId
+  o String name
+  o Integer age
+  --> Hospital hospital
+  o String email
   o String organName
-  o String AppointmentId
-  o String TestData
+  o String address
+  --> Organ allotedOrgan optional
 }
 
-participant Hospital identified by HospitalID {
-  o String HospitalID
-  o String Name
-  o contactInfo info
+participant Hospital identified by hospitalId {
+  o String hospitalId
+  o String name
+  o String email
+  o String address
 }
 
-participant Unos identified by UnosID {
-  o String UnosID
+participant Unos identified by unosId {
+  o String unosId
+}
+
+transaction Setup {
+}
+
+abstract transaction OrganStatus {
+  --> Organ organ
+}
+
+transaction Offered {
+  --> Donor donor
+  o String organName
 }
