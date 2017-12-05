@@ -16,7 +16,29 @@ exports.hospitalLogin = function(req,res) {
         });
 };
 
+exports.getAllAppts = function (req, res) {
+    var donorId = req.params.donorId;
+    var sql = Appointment.find().where('donorId').equals(donorId);
+
+    sql.populate("donorId").populate("organ").populate("sourceHospital")
+        .exec(function(err, appts){
+            if(err) {
+                res.status(500).send({message: "Some error occurred while retrieving appts."});
+            } else {
+                res.send(appts);
+            }
+        });
+};
+
 exports.create = function(req, res) {
+    var sql = Hospital.find().where('name').equals(req.body.name).where('zip').equals(req.body.zip);
+    sql.exec(function(err, hospital) {
+        if (err) {
+
+        } else {
+            res.status(400).send("bad request. Hospital already registered");
+        }
+    });
     var hospital = new Hospital({name: req.body.name, userType:"Hospital", address: req.body.address, zip: req.body.zip, 
         phone: req.body.phone, email: req.body.email, password: req.body.password, chekUpDate: new Date(Date.now())});
     var promise = hospital.save();
