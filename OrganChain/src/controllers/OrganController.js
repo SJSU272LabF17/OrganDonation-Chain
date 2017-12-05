@@ -6,15 +6,23 @@ var AppointmentController = require('../controllers/AppointmentController.js');
  * used by donor page to create the organ.
  */
 exports.createOrgan = function(req, res) {
-    var organ = new Organ({
-        name: req.body.name,
-        donorId: req.body.donorId
-    });
-    organ.save().then(function(organ) {
-        res.status(200).send(organ);
-    }).catch(function(err) {
-        console.log(err);
-        res.status(500).send({message: "Some error occurred while creating the organ."});
+
+    var sql = Organ.find().where('name').equals(req.body.name).where('donorId').equals(req.body.donorId);
+    sql.exec().then(function(organ) {
+        if (organ && organ.length == 0) {
+            var organ = new Organ({
+                name: req.body.name,
+                donorId: req.body.donorId
+            });
+            organ.save().then(function(organ) {
+                res.status(200).send(organ);
+            }).catch(function(err) {
+                console.log(err);
+                res.status(500).send({message: "Some error occurred while creating the organ."});
+            });
+        } else {
+            res.status(400).send("Organ " + req.body.name + " already registered");
+        }
     });
 };
 

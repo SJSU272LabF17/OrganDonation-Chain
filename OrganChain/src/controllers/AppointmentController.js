@@ -125,6 +125,21 @@ exports.scheduledTestingAppts = function (req, res) {
         });
 };
 
+
+exports.getAllAppts = function (req, res) {
+    var donorId = req.params.donorId;
+    var sql = Appointment.find().where('donorId').equals(donorId);
+
+    sql.populate("donorId").populate("organ").populate("sourceHospital")
+        .exec(function(err, appts){
+            if(err) {
+                res.status(500).send({message: "Some error occurred while retrieving appts."});
+            } else {
+                res.send(appts);
+            }
+        });
+};
+
 exports.scheduledTransplantAppts = function (req, res) {
     var sql = Appointment.find().where('type').equals('transplant');
 
