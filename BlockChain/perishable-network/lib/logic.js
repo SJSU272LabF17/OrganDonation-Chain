@@ -90,20 +90,86 @@ function setup(setup) {
 
 /**
  * Initialize some test assets and participants useful for running a demo.
- * @param {org.organchain.Donor} donor - the Donor
- * @param organName - Organ name
- * @param organId - Organ Id
+ * @param {org.organchain.Offered} offered - the offered Organ details
  * @transaction
  */
-function offered(donor, organName, organId) {
+function Offered(offered) {
         // create the organ
-        var organ = factory.newResource(NS, 'Organ', organId);
-        organ.organName = organName;
-        organ.donor = factory.newRelationship(NS, 'Donor', donor);
-        organ.status = "OFFERED";
+        var factory = getFactory();
+        var NS = 'org.organchain';
+		var newOrgan = factory.newResource(NS, 'Organ', offered.organId);
+        newOrgan.organName = offered.organName;
+        newOrgan.donor = offered.donor;
+        newOrgan.status = "OFFERED";
         return getAssetRegistry(NS + '.Organ')
         .then(function (organRegistry) {
             // add the donor
-            return organRegistry.addAll([organ]);
+            return organRegistry.addAll([newOrgan]);
         });
 }    
+
+/**
+ * Initialize some test assets and participants useful for running a demo.
+ * @param {org.organchain.Tested} data - the offered Organ details
+ * @transaction
+ */
+function Tested(data) {
+    // create the organ
+    var factory = getFactory();
+    var NS = 'org.organchain';
+    var organ = data.organ;
+
+    var hospitalId = data.hospital.$identifier;
+    organ.sourceHospital = data.hospital;
+    organ.status = "TESTED";
+    return getAssetRegistry(NS + '.Organ')
+    .then(function (organRegistry) {
+        // add the donor
+        return organRegistry.update(organ);
+    });
+}    
+
+/**
+ * Initialize some test assets and participants useful for running a demo.
+ * @param {org.organchain.Matched} data - the matched Organ details
+ * @transaction
+ */
+function Matched(data) {
+    // create the organ
+    var factory = getFactory();
+    var NS = 'org.organchain';
+    var organ = data.organ;
+
+    var hospitalId = data.hospital.$identifier;
+    organ.destHospital = data.hospital;
+    organ.recipient = data.recipient;
+    organ.status = "MATCHED";
+    return getAssetRegistry(NS + '.Organ')
+    .then(function (organRegistry) {
+        // add the donor
+        return organRegistry.update(organ);
+    });
+}    
+
+/**
+ * Initialize some test assets and participants useful for running a demo.
+ * @param {org.organchain.Transplant} data - the matched Organ details
+ * @transaction
+ */
+function Transplant(data) {
+    // create the organ
+    var factory = getFactory();
+    var NS = 'org.organchain';
+    var organ = data.organ;
+
+    organ.status = "TRANSPLANT";
+    return getAssetRegistry(NS + '.Organ')
+    .then(function (organRegistry) {
+        // add the donor
+        return organRegistry.update(organ);
+    });
+}    
+
+
+
+

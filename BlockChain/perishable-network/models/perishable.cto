@@ -63,3 +63,15 @@ transaction Offered {
   o String organName
   o String organId
 }
+
+transaction Tested extends OrganStatus {
+  --> Hospital hospital
+}
+
+transaction Matched extends OrganStatus {
+  --> Hospital hospital
+  --> Recipient recipient
+}
+
+transaction Transplant extends OrganStatus {
+}
