@@ -14,7 +14,8 @@ const mapStateToProps = (state) => {
     email: state.actionReducer.email,
     organName: state.actionReducer.organName,
     isloggedIn: state.actionReducer.isloggedIn,
-    hospitalByZip: state.actionReducer.hospitalByZip
+    hospitalByZip: state.actionReducer.hospitalByZip,
+    showRegisterDonorOrganSuccess : state.actionReducer.showRegisterDonorOrganSuccess
   }
 }
 
@@ -37,6 +38,7 @@ class UserHome extends Component {
 			age:"",
 			address:"",
 			zip:"",
+			organType:"Choose Organ"
 	     }
     	this.handleDropdownClick = this.handleDropdownClick.bind(this);
     	this.handleLogout = this.handleLogout.bind(this);
@@ -49,6 +51,7 @@ class UserHome extends Component {
 	    this.handleZipChange = this.handleZipChange.bind(this);
 	    this.handleOrganNameChange = this.handleOrganNameChange.bind(this);
 	    this.hospitalSelectedForCheckUp = this.hospitalSelectedForCheckUp.bind(this);
+	    this.handleOrganTypeChange = this.handleOrganTypeChange.bind(this);
 	}
 
 	handleDropdownClick(e){
@@ -104,6 +107,11 @@ class UserHome extends Component {
   	this.props.dispatch(this.props.hospitalSelectedForCheckUp(hospital, this.props));
   }
 
+  handleOrganTypeChange(event){
+  	this.setState({organType:event.target.innerText});
+  	this.props.dispatch(this.props.getHospitalsByZip(this.props));
+  }
+
   render() {
     return (
     	<div className="homePage">
@@ -120,7 +128,7 @@ class UserHome extends Component {
 			                <li>
 			                    <TabLink to="section-organ"><a href="#section-organ" data-toggle="tab" className="tab-toggle">Donate An Organ</a></TabLink>
 			                </li>
-			                <li onClick={() => this.props.dispatch(this.props.getHospitalsByZip(this.props))}>
+			                <li>
 			                    <TabLink to="section-appointment"><a href="#section-appointment" data-toggle="tab" className="tab-toggle">Appointment For Check Up</a></TabLink>
 			                </li>
 			            </ul>
@@ -195,13 +203,13 @@ class UserHome extends Component {
 			                    <p className="col-md-2 text-right">Organ Type:</p>
 			                    <input className="col-md-10 text-left text-input-input autofocus" type="text" value={this.props.organName} onChange={this.handleOrganNameChange} />
 			                </div>
-			                <input type="submit" className="btn login-button" value="Register My Organ!" onClick={() => this.props.dispatch(this.props.registerDonorOrgan(this.props))}/>
+			                <input type="submit" className="btn login-button" value="Register My Organ!" onClick={() => this.props.dispatch(this.props.registerDonorOrgan(this.state))} data-toggle="modal" data-target="#registerDonorOrganSuccessModal"/>
 			        	</TabContent>
 			            <TabContent for="section-appointment">
 				            <nav className="navbar navbar-default">
 				                <div className="container-fluid">
 				                    <div className="navbar-header">
-				                        <h2>Appointment For Checkup
+				                        <h2>Available Appointments near your location
 					                        <div className="rightPart">
 										        <header className="pageHeader col-md-12">
 										            <div className="top-menu-container col-md-6">
@@ -216,24 +224,69 @@ class UserHome extends Component {
 									    </h2>
 				                    </div>
 				                </div>
-				            </nav>
-				            <h2>Available Appointments near your location</h2><p></p>
-				            <div className="list-group">
-				            	{this.props.hospitalByZip && this.props.hospitalByZip.length>0 ? this.props.hospitalByZip.map(step =>
-				            		<div href="#" key={step.name} className="list-group-item list-group-item-action flex-column align-items-start">
-					            		<div className="d-flex w-100 justify-content-between">
-									      <h5 className="mb-1">{step.name}</h5>
-									      <small><span>zip:</span><span>{step.zip}</span></small>
-									    </div>
-									    <p className="mb-1">{step.address}</p>
-									    <small><span>Slot Available: </span><span>{step.chekUpDate}</span></small>
-									    <button type="button" className="btn btn-primary" onClick={this.hospitalSelectedForCheckUp.bind(this, step)}>Choose</button>
-									</div>
-				            	) : null}
-							</div>
+				            </nav>				            
+			                <div className="dropdown halfWidth">
+			                  <button className="btn btn-secondary dropdown-toggle halfWidth" type="button" id="organType" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			                    {this.state.organType}
+			                  </button>
+			                  <div className="dropdown-menu halfWidth" aria-labelledby="organType">
+			                    <a className="dropdown-item" href="#" onClick={this.handleOrganTypeChange}>Heart</a>
+			                    <a className="dropdown-item" href="#"  onClick={this.handleOrganTypeChange}>Liver</a>
+			                  </div>
+			                </div>
+			                {this.state.organType=="Choose Organ" ? null :
+					            <div className="list-group">
+					            	{this.props.hospitalByZip && this.props.hospitalByZip.length>0 ? this.props.hospitalByZip.map(step =>
+					            		<div href="#" key={step.name} className="list-group-item list-group-item-action flex-column align-items-start">
+						            		<div className="d-flex w-100 justify-content-between">
+										      <h5 className="mb-1">{step.name}</h5>
+										      <small><span>zip:</span><span>{step.zip}</span></small>
+										    </div>
+										    <p className="mb-1">{step.address}</p>
+										    <small><span>Slot Available: </span><span>{step.chekUpDate}</span></small>
+										    <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#appointmentBookedModal" onClick={this.hospitalSelectedForCheckUp.bind(this, step)}>Choose</button>
+										</div>
+					            	) : null}
+								</div>}
 			        	</TabContent>
 			        </div>
 			    </Tabs>
+		    </div>
+	    	<div id="registerDonorOrganSuccessModal" className="modal fade" role="dialog">
+		        <div className="modal-dialog">
+		            <div className="modal-content">
+		                <div className="modal-header">
+		                    <h4 className="modal-title">Registration Successful!</h4>
+		                    <button type="button" className="close" data-dismiss="modal">&times;</button>
+		                </div>
+		                <div className="modal-body">
+		                    <p>Congratulations on taking first step towards saving a life!! Now you can schedule an appointment at nearest hospital.</p>
+		                </div>
+		                <div className="modal-footer">
+		                    <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={() => {
+                            this.props.history.push('/login')
+                        }}>Close</button>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+	    	<div id="appointmentBookedModal" className="modal fade" role="dialog">
+		        <div className="modal-dialog">
+		            <div className="modal-content">
+		                <div className="modal-header">
+		                    <h4 className="modal-title">Appointment Booked!</h4>
+		                    <button type="button" className="close" data-dismiss="modal">&times;</button>
+		                </div>
+		                <div className="modal-body">
+		                    <p>Congratulations!! Appointment successfully scheduled at hospital.</p>
+		                </div>
+		                <div className="modal-footer">
+		                    <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={() => {
+                            this.props.history.push('/login')
+                        }}>Close</button>
+		                </div>
+		            </div>
+		        </div>
 		    </div>
 		    <div id="profileModal" className="modal fade" role="dialog">
 		        <div className="modal-dialog">

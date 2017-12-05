@@ -503,6 +503,11 @@ html, body, .container, .homePage, .vertical-menu, .vertical-right {
   width: 100%;
   text-align: left;
 }
+.halfWidth{
+  width: 50%;
+  text-align: left;
+  margin-bottom: 10px;  
+}
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
 
 

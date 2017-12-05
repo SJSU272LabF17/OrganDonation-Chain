@@ -11,7 +11,8 @@ const defaultState = {
     registerMsg:"",
     isloggedIn:false,
     testingAppts:[],
-    transplantAppts:[]
+    transplantAppts:[],
+    showRegisterDonorOrganSuccess: false
 }
 
 export default function actionReducer (state = defaultState, action){
@@ -65,6 +66,7 @@ export default function actionReducer (state = defaultState, action){
 			return newState;
 		case 'registerDonorOrganSuccess':
 			newState.organId = action.payload.organId;
+			newState.showRegisterDonorOrganSuccess = true;
 			return newState;
 		case 'retriveTestingApptsSuccess':
 			newState.testingAppts = action.payload;
