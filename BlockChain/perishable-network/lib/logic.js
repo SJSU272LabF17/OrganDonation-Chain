@@ -42,7 +42,7 @@ function setup(setup) {
         recipient.organName = "liver";
         recipient.address = "recipient address";
 
-        // // create the organ
+        // create the organ
         // var organ = factory.newResource(NS, 'Organ', 'Organ_001');
         // organ.organName = "liver";
         // organ.donor = factory.newRelationship(NS, 'Donor', 'D123');
@@ -87,3 +87,23 @@ function setup(setup) {
                 return recipientRegistry.addAll([recipient]);
             })
 }
+
+/**
+ * Initialize some test assets and participants useful for running a demo.
+ * @param {org.organchain.Donor} donor - the Donor
+ * @param organName - Organ name
+ * @param organId - Organ Id
+ * @transaction
+ */
+function offered(donor, organName, organId) {
+        // create the organ
+        var organ = factory.newResource(NS, 'Organ', organId);
+        organ.organName = organName;
+        organ.donor = factory.newRelationship(NS, 'Donor', donor);
+        organ.status = "OFFERED";
+        return getAssetRegistry(NS + '.Organ')
+        .then(function (organRegistry) {
+            // add the donor
+            return organRegistry.addAll([organ]);
+        });
+}    

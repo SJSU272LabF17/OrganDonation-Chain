@@ -20,7 +20,6 @@ participant Donor identified by donorId {
   o String email
   o String address
   o Integer zip
-  o String organName
 }
 
 enum Status {
@@ -62,4 +61,5 @@ abstract transaction OrganStatus {
 transaction Offered {
   --> Donor donor
   o String organName
+  o String organId
 }
