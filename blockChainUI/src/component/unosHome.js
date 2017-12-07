@@ -170,16 +170,9 @@ class UnosHome extends Component {
 	}
 
 	componentWillReceiveProps(nextProps){
-		if(sessionStorage.getItem('userId')==null){
-			this.props.history.push('/login');
-		}
 	}
 
 	handleLogout(){
-		sessionStorage.removeItem('currentFileId');
-		sessionStorage.removeItem('userId');
-		this.setState({showLogout:!this.state.showLogout});
-		this.props.history.push('/login');
 	}
 
 	handleTransplantOrgan(){
