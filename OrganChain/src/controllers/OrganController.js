@@ -58,7 +58,7 @@ exports.update = function(req, res) {
         organ.organTestInfo = req.body.organTestInfo;
         organ.sourceHospital = req.body.sourceHospital;
         var promise = organ.save();
-        promise.then(organ => AppointmentController.apptInactive(organ, req.body.appointmentId, res))
+        promise.then(organ => res.send(organ))
             .catch(function (err) {
             console.log(err);
             res.status(500).send({message: "Some error occurred while creating the Appointment."});

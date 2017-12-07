@@ -53,6 +53,15 @@ exports.createUnosAppointment = function(req, res) {
             }
         );
     }
+    if (!req.body.recId) {
+        return res.status(400).send({message: "recId can not be empty" });
+    }
+    if (!req.body.targetHospital) {
+        return res.status(400).send({message: "targetHospital can not be empty" });
+    }
+    if (!req.body.appointmentId) {
+        return res.status(400).send({message: "AppointmentId can not be empty" });
+    }
     var appointment = new Appointment({
         date : new Date(req.body.date),
         sourceHospital: req.body.targetHospital,
@@ -72,7 +81,7 @@ exports.createUnosAppointment = function(req, res) {
                     recipient.allotedOrganId = req.body.organ;
                     var promiseRecipient = recipient.save();
                     promiseRecipient.then(rec => {
-                       res.send(appointment);
+                        module.exports.apptInactive(appointment, req.body.appointmentId, res);
                     });
                 });
             }).catch(function(err) {
