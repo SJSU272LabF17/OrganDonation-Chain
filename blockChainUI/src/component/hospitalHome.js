@@ -48,7 +48,9 @@ class HospitalHome extends Component {
 			organSpecificInfo:"",
 			doctorNotes:"",
 			tranplantCompleted: false,
-			currentOrgan:""
+			currentOrgan:"",
+			currentDonor: {},
+			showSecondMarble:false
 	     }
     	this.handleLogout = this.handleLogout.bind(this);
     	this.handleDropdownClick = this.handleDropdownClick.bind(this);
@@ -77,6 +79,7 @@ class HospitalHome extends Component {
 	    this.retriveTestingAppts = this.retriveTestingAppts.bind(this);
 	    this.registerRecepeint = this.registerRecepeint.bind(this);
 	    this.retriveTransplantAppts = this.retriveTransplantAppts.bind(this);
+	    this.showDonor = this.showDonor.bind(this);
 	}
 
 	handleDropdownClick(e){
@@ -89,6 +92,7 @@ class HospitalHome extends Component {
 
     handleApproveOrgan(){
     	this.props.dispatch(this.props.handleApproveOrgan(this.state));
+    	this.setState({showSecondMarble: true});
     }
 
 	handleFNChange(event){
@@ -201,10 +205,30 @@ class HospitalHome extends Component {
 		this.props.dispatch(this.props.retriveTransplantAppts(this.props));	
 	}
 
+	showDonor(temp){
+		this.setState({currentDonor:temp});
+	}
+
 	render() {
 		return (
 			<div className="homePage">
-			    <div className="wrapper">
+			    <div className="wrapper">			    
+			    	<div id="recepientRegisteredModal" className="modal fade" role="dialog">
+				        <div className="modal-dialog">
+				            <div className="modal-content">
+				                <div className="modal-header">
+				                    <h4 className="modal-title">Recipient registration</h4>
+				                    <button type="button" className="close" data-dismiss="modal">&times;</button>
+				                </div>
+				                <div className="modal-body">
+				                    <p>Congratulations!! Recipient successfully registered.</p>
+				                </div>
+				                <div className="modal-footer">
+				                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+				                </div>
+				            </div>
+				        </div>
+				    </div>
 			        <Tabs className="tabs tabs-1">
 				        <nav id="sidebar">
 				            <div className="sidebar-header">
@@ -244,17 +268,16 @@ class HospitalHome extends Component {
 					            </nav>
 					            <div className="row">
 					            	{this.props.testingAppts && this.props.testingAppts.length>0 ? this.props.testingAppts.map(step =>
-							            
-								            <div className="col-md-4 patientBox">
-								            	<div className="patientBoxInner">
-									            	<div className="boxTitle" data-toggle="modal" data-target="#organDetailsModal">{step.donorId.firstName+" "+step.donorId.lastName}</div>
-									            	<div className="">
-										            	<img className="patientBoxIcons" data-toggle="modal" data-target="#organDetailsModal" src="images/registered.png" alt="userIcon" />
-										            	{this.state.organToOffer ? <img height="80px" data-toggle="modal" data-target="#chekUpDetailsModal" className="patientBoxIcons organToOffer" src="images/registered1.png" alt="userIcon" /> : null}
-										            	<img className={"patientBoxIcons float-right "+ (this.state.organToOffer ? 'iconDisabled' :null )} data-toggle="modal" data-target="#verfiyModal" src="images/add.png" alt="userIcon" onClick={this.setCurrentOrgan.bind(this, step)}/>
-										            </div>
-										        </div>
-							                </div> 
+									            <div className={"col-md-4 patientBox "+(this.state.showSecondMarble ? "iconDisabled ": "" )+((step.organ && step.organ.organTestInfo) || step.status=="inactive" ? "hideBlock" : "")}>
+									            	<div className="patientBoxInner">
+										            	<div className="boxTitle" data-toggle="modal" data-target="#organDetailsModal">{step.donorId.firstName+" "+step.donorId.lastName}</div>
+										            	<div className="">
+											            	<img className="patientBoxIcons" data-toggle="modal" data-target="#organDetailsModal" src="images/registered.png" alt="userIcon" onClick={this.showDonor.bind(this, step.donorId)}/>
+											            	{this.state.showSecondMarble ? <img height="80px" data-toggle="modal" data-target="#chekUpDetailsModal" className="patientBoxIcons organToOffer" src="images/registered1.png" alt="userIcon" /> : null}
+											            	<img className="patientBoxIcons float-right" data-toggle="modal" data-target="#verfiyModal" src="images/add.png" alt="userIcon" onClick={this.setCurrentOrgan.bind(this, step)}/>
+											            </div>
+											        </div>
+								                </div>
 							                )
 						            : null }
 					            </div>
@@ -347,7 +370,7 @@ class HospitalHome extends Component {
 										    <input className="col-md-10 text-left text-input-input autofocus" type="text" onChange={this.handleDoctorNotesChange} />
 										</div>
 									</Collapsible>
-					                <input type="submit" className="btn login-button" value="Register Recipient" onClick={this.registerRecepeint} />
+					                <input type="submit" className="btn login-button" value="Register Recipient" onClick={this.registerRecepeint}  data-toggle="modal" data-target="#recepientRegisteredModal"/>
 					        	</div>
 				        	</TabContent>
 				        	<TabContent for="section-transplant">
@@ -374,7 +397,7 @@ class HospitalHome extends Component {
 						            	{this.props.transplantAppts && this.props.transplantAppts.length>0 ? this.props.transplantAppts.map(step =>
 								            <div className="col-md-5 patientBox">
 								            	<div className={"patientBoxInner "+ (this.state.tranplantCompleted ? 'iconDisabled' :null )}>
-									            	<div className="boxTitle" data-toggle="modal" data-target="#organDetailsModal">{step.donorId.firstName+" "+step.donorId.lastName}</div>
+									            	<div className="boxTitle" data-toggle="modal" data-target="#organDetailsModal">{step.donorId ? step.donorId.firstName+" "+step.donorId.lastName: ""}</div>
 									            	<div className="">
 										            	<img className="patientBoxIcons" data-toggle="modal" data-target="#organDetailsModal" src="images/registered.png" alt="userIcon" />
 										            	<img height="80px" className="patientBoxIcons organToOffer" data-toggle="modal" data-target="#chekUpDetailsModal" src="images/registered1.png" alt="userIcon" />
@@ -399,8 +422,6 @@ class HospitalHome extends Component {
 			                    <button type="button" className="close" data-dismiss="modal">&times;</button>
 			                </div>
 			                <div className="modal-body">
-			                    Organ to Offer:
-			                    <input className="text-input-input autofocus" type="text" value={this.props.organToOffer} onChange={this.handleOrganToOfferChange} /> 
 			                    Blood Type:
 			                    <input className="text-input-input autofocus" type="text" value={this.props.bloodType} onChange={this.handleBloodTypeChange}/>
 			                    Class1 Protein:
@@ -433,10 +454,6 @@ class HospitalHome extends Component {
 			                    <button type="button" className="close" data-dismiss="modal">&times;</button>
 			                </div>
 			                <div className="modal-body">
-			                	<Collapsible className="col-md-12 text-right" trigger="Generic Details">
-				                    Organ to tranplant:
-				                    <input className="text-input-input autofocus" type="text" value={this.props.organToOffer} onChange={this.handleOrganToOfferChange} /> 				                    
-					            </Collapsible>
 					            <Collapsible className="col-md-12 text-right" trigger="Donor's Data">
 				                    Blood Type:
 				                    <input className="text-input-input autofocus" type="text" value={this.props.bloodType} onChange={this.handleBloodTypeChange}/>
@@ -546,27 +563,27 @@ class HospitalHome extends Component {
 			                <div className="modal-body">
 					            <div className="row">
 				                    <p className="col-md-3 text-right">First Name:</p>
-				                    <p className="col-md-9 text-left" value={this.props.firstName}>Admin</p> 
+				                    <p className="col-md-9 text-left">{this.state.currentDonor.firstName}</p> 
 				                </div>
 					            <div className="row">
 				                    <p className="col-md-3 text-right">Last Name:</p>
-				                    <p className="col-md-9 text-left" value={this.props.lastName}>Admin</p> 
+				                    <p className="col-md-9 text-left">{this.state.currentDonor.lastName}</p> 
 				                </div>
 					            <div className="row">
 				                    <p className="col-md-3 text-right">Age:</p>
-				                    <p className="col-md-9 text-left" value={this.props.age}>25</p> 
+				                    <p className="col-md-9 text-left">{this.state.currentDonor.age}</p> 
 				                </div>
 					            <div className="row">
 				                    <p className="col-md-3 text-right">Address:</p>
-				                    <p className="col-md-9 text-left" value={this.props.address}>200 Rayland</p> 
+				                    <p className="col-md-9 text-left">{this.state.currentDonor.address}</p> 
 				                </div>
 					            <div className="row">
 				                    <p className="col-md-3 text-right">Email:</p>
-				                    <p className="col-md-9 text-left" value={this.props.email}>admin@admin.com</p> 
+				                    <p className="col-md-9 text-left">{this.state.currentDonor.email}</p> 
 				                </div>
 					            <div className="row">
 				                    <p className="col-md-3 text-right">Zip code:</p>
-				                    <p className="col-md-9 text-left" value={this.props.firstName}>95000</p> 
+				                    <p className="col-md-9 text-left">{this.state.currentDonor.zip}</p> 
 				                </div>
 			                </div>
 			                <div className="modal-footer">

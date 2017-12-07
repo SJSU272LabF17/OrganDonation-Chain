@@ -133,6 +133,15 @@ export function retriveTestingAppts(state){
 	}
 }
 
+export function retriveDonorAppts(state){
+	return function(dispatch){
+		return axios.get("http://localhost:3001/appointment/testing/"+sessionStorage.getItem('userId')).then((response) => {
+			 dispatch({type:"retriveDonorApptsSuccess", payload: response.data})
+		}).catch((err) => {
+			 dispatch({type:"retriveDonorApptsFailed", payload: err.response.data})
+		})
+	}
+}
 
 export function retriveTransplantAppts(){
 	return function(dispatch){
@@ -140,6 +149,26 @@ export function retriveTransplantAppts(){
 			 dispatch({type:"retriveTransplantApptsSuccess", payload: response.data})
 		}).catch((err) => {
 			 dispatch({type:"retriveTransplantApptsFailed", payload: err.response.data})
+		})
+	}
+}
+
+export function retriveDonorOrgans(){
+	return function(dispatch){
+		return axios.get("http://localhost:3001/organ/"+sessionStorage.getItem('userId')).then((response) => {
+			 dispatch({type:"retriveDonorOrgansSuccess", payload: response.data})
+		}).catch((err) => {
+			 dispatch({type:"retriveDonorOrgansFailed", payload: err.response.data})
+		})
+	}
+}
+
+export function retriveRecList(){
+	return function(dispatch){
+		return axios.get("http://localhost:3001/recipient/").then((response) => {
+			 dispatch({type:"retriveRecListSuccess", payload: response.data})
+		}).catch((err) => {
+			 dispatch({type:"retriveRecListFailed", payload: err.response.data})
 		})
 	}
 }
@@ -217,5 +246,21 @@ export function registerRecepeint(state){
 		}).catch((err) => {
 			 dispatch({type:"registerRecepeintFailed", payload: err.response.data})
 		})
+	}
+}
+
+export function chooseRecepient(recipient, state){
+	return function(dispatch){
+		let temp = {
+			date : new Date(),
+			targetHospital : recipient.hospital,
+			recId: recipient._id,
+			organ : recipient.chekUpDate
+		};
+		return axios.post("http://localhost:3001/appointment/unos", temp).then((response) => {
+			 dispatch({type:"hospitalSelectedForCheckUpSuccess", payload: response.data})
+		}).catch((err) => {
+			 dispatch({type:"hospitalSelectedForCheckUpFailed", payload: err.response.data})
+		})		
 	}
 }

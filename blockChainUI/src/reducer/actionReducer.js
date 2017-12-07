@@ -12,7 +12,10 @@ const defaultState = {
     isloggedIn:false,
     testingAppts:[],
     transplantAppts:[],
-    showRegisterDonorOrganSuccess: false
+    showRegisterDonorOrganSuccess: false,
+    donorAppts : [],
+    donorOrganList : [],
+    recepeintList : []
 }
 
 export default function actionReducer (state = defaultState, action){
@@ -78,6 +81,19 @@ export default function actionReducer (state = defaultState, action){
 			return newState;
 		case 'handleTransplantOrganSuccess':
 			return newState;
+		case 'retriveDonorApptsSuccess':
+			if(action.payload && action.payload.length>0){
+				newState.donorAppts = action.payload;
+			} else {
+				newState.donorAppts = [];
+			}
+			return newState;
+		case 'retriveDonorOrgansSuccess':
+		 	newState.donorOrganList = action.payload;
+		 	return newState;
+		 case 'retriveRecListSuccess':
+		 	newState.recepeintList = action.payload;
+		 	return newState;
 		default:
 			return newState;
 	}

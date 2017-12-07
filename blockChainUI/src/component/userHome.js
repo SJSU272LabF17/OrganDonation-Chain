@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { retriveDonorByEmail, registerDonorOrgan, getHospitalsByZip, hospitalSelectedForCheckUp } from '../actions/allActions';
+import { retriveDonorByEmail, registerDonorOrgan, getHospitalsByZip, hospitalSelectedForCheckUp, retriveDonorAppts, retriveDonorOrgans } from '../actions/allActions';
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux';
 
 const mapStateToProps = (state) => {
@@ -15,12 +15,14 @@ const mapStateToProps = (state) => {
     organName: state.actionReducer.organName,
     isloggedIn: state.actionReducer.isloggedIn,
     hospitalByZip: state.actionReducer.hospitalByZip,
-    showRegisterDonorOrganSuccess : state.actionReducer.showRegisterDonorOrganSuccess
+    showRegisterDonorOrganSuccess : state.actionReducer.showRegisterDonorOrganSuccess,
+    donorAppts : state.actionReducer.donorAppts,
+    donorOrganList : state.actionReducer.donorOrganList
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
-  let actions = { retriveDonorByEmail, registerDonorOrgan, getHospitalsByZip, hospitalSelectedForCheckUp};
+  let actions = { retriveDonorByEmail, registerDonorOrgan, getHospitalsByZip, hospitalSelectedForCheckUp, retriveDonorAppts, retriveDonorOrgans};
   return { ...actions, dispatch };
 }
 
@@ -38,7 +40,8 @@ class UserHome extends Component {
 			age:"",
 			address:"",
 			zip:"",
-			organType:"Choose Organ"
+			organType:"Choose Organ",
+			handleOrganRegistrationError : ""
 	     }
     	this.handleDropdownClick = this.handleDropdownClick.bind(this);
     	this.handleLogout = this.handleLogout.bind(this);
@@ -52,6 +55,7 @@ class UserHome extends Component {
 	    this.handleOrganNameChange = this.handleOrganNameChange.bind(this);
 	    this.hospitalSelectedForCheckUp = this.hospitalSelectedForCheckUp.bind(this);
 	    this.handleOrganTypeChange = this.handleOrganTypeChange.bind(this);
+	    this.handleOrganRegistration = this.handleOrganRegistration.bind(this);
 	}
 
 	handleDropdownClick(e){
@@ -88,11 +92,15 @@ class UserHome extends Component {
 
 	componentDidMount(){
 		this.props.dispatch(this.props.retriveDonorByEmail(this.props));
+		this.props.dispatch(this.props.retriveDonorOrgans(this.props));
 	}
 
 	componentWillReceiveProps(nextProps){
 		if(sessionStorage.getItem('userId')==null){
 			this.props.history.push('/login');
+		}
+		if(this.state.donorAppts && this.state.donorAppts.length==0){
+  			this.props.dispatch(this.props.retriveDonorAppts(this.props));
 		}
 	}
 
@@ -112,6 +120,17 @@ class UserHome extends Component {
   	this.props.dispatch(this.props.getHospitalsByZip(this.props));
   }
 
+  handleOrganRegistration(){
+  	this.setState({handleOrganRegistrationError:""});
+  	var tempOrgan = this.state.organName;
+  	if(this.props.donorOrganList && this.props.donorOrganList.length>0 && 
+  		this.props.donorOrganList.filter(function(e) {return e.name==tempOrgan}).length>0){
+  		this.setState({handleOrganRegistrationError:"Organ already registered"});
+  	} else {
+  		this.props.dispatch(this.props.registerDonorOrgan(this.state));
+  	}
+  }
+
   render() {
     return (
     	<div className="homePage">
@@ -128,7 +147,7 @@ class UserHome extends Component {
 			                <li>
 			                    <TabLink to="section-organ"><a href="#section-organ" data-toggle="tab" className="tab-toggle">Donate An Organ</a></TabLink>
 			                </li>
-			                <li>
+			                <li onClick={() => this.props.dispatch(this.props.retriveDonorAppts(this.props))}>
 			                    <TabLink to="section-appointment"><a href="#section-appointment" data-toggle="tab" className="tab-toggle">Appointment For Check Up</a></TabLink>
 			                </li>
 			            </ul>
@@ -203,7 +222,7 @@ class UserHome extends Component {
 			                    <p className="col-md-2 text-right">Organ Type:</p>
 			                    <input className="col-md-10 text-left text-input-input autofocus" type="text" value={this.props.organName} onChange={this.handleOrganNameChange} />
 			                </div>
-			                <input type="submit" className="btn login-button" value="Register My Organ!" onClick={() => this.props.dispatch(this.props.registerDonorOrgan(this.state))} data-toggle="modal" data-target="#registerDonorOrganSuccessModal"/>
+			                <input type="submit" className="btn login-button" value="Register My Organ!" onClick={this.handleOrganRegistration} data-toggle="modal" data-target="#registerDonorOrganSuccessModal"/>
 			        	</TabContent>
 			            <TabContent for="section-appointment">
 				            <nav className="navbar navbar-default">
@@ -224,30 +243,51 @@ class UserHome extends Component {
 									    </h2>
 				                    </div>
 				                </div>
-				            </nav>				            
-			                <div className="dropdown halfWidth">
-			                  <button className="btn btn-secondary dropdown-toggle halfWidth" type="button" id="organType" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-			                    {this.state.organType}
-			                  </button>
-			                  <div className="dropdown-menu halfWidth" aria-labelledby="organType">
-			                    <a className="dropdown-item" href="#" onClick={this.handleOrganTypeChange}>Heart</a>
-			                    <a className="dropdown-item" href="#"  onClick={this.handleOrganTypeChange}>Liver</a>
-			                  </div>
-			                </div>
-			                {this.state.organType=="Choose Organ" ? null :
-					            <div className="list-group">
-					            	{this.props.hospitalByZip && this.props.hospitalByZip.length>0 ? this.props.hospitalByZip.map(step =>
-					            		<div href="#" key={step.name} className="list-group-item list-group-item-action flex-column align-items-start">
-						            		<div className="d-flex w-100 justify-content-between">
-										      <h5 className="mb-1">{step.name}</h5>
-										      <small><span>zip:</span><span>{step.zip}</span></small>
-										    </div>
-										    <p className="mb-1">{step.address}</p>
-										    <small><span>Slot Available: </span><span>{step.chekUpDate}</span></small>
-										    <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#appointmentBookedModal" onClick={this.hospitalSelectedForCheckUp.bind(this, step)}>Choose</button>
-										</div>
-					            	) : null}
-								</div>}
+				            </nav>
+				            {this.props.donorAppts && this.props.donorAppts.length>0 ?
+				            	<div>{this.props.donorAppts.map(step =>
+					            	<div href="#" key={step.sourceHospital._id} className="list-group-item list-group-item-action flex-column align-items-start">
+					            		<div className="d-flex w-100 justify-content-between">
+									      <h5 className="mb-1">{step.sourceHospital.name}</h5>
+									      <small><span>zip:</span><span>{step.sourceHospital.zip}</span></small>
+									    </div>
+									    <p className="mb-1">{step.sourceHospital.address}</p>
+									    <p className="mb-1">{step.sourceHospital.email}</p>
+									    <p className="mb-1">{step.sourceHospital.phone}</p>
+									    <p><span>Slot Booked: </span><span>{step.sourceHospital.chekUpDate}</span></p>
+									</div>
+					            )}</div>
+				            	:
+				            	<div>
+				            		{this.props.donorOrganList && this.props.donorOrganList.length>0 ?
+						                <div className="dropdown halfWidth">
+						                  <button className="btn btn-secondary dropdown-toggle halfWidth" type="button" id="organType" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						                    {this.state.organType}
+						                  </button>
+						                  <div className="dropdown-menu halfWidth" aria-labelledby="organType">					                  
+						                  {this.props.donorOrganList && this.props.donorOrganList.length>0 ? this.props.donorOrganList.map(step =>
+						                    <a className="dropdown-item" key={step._id} href="#" onClick={this.handleOrganTypeChange}>{step.name}</a>
+						                  ):null}
+						                  </div>
+						                </div> : 
+						                <p>No appointments. Please register your organ first.</p>
+						            }
+					                {this.state.organType=="Choose Organ" ? null :
+							            <div className="list-group">
+							            	{this.props.hospitalByZip && this.props.hospitalByZip.length>0 ? this.props.hospitalByZip.map(step =>
+							            		<div href="#" key={step.name} className="list-group-item list-group-item-action flex-column align-items-start">
+								            		<div className="d-flex w-100 justify-content-between">
+												      <h5 className="mb-1">{step.name}</h5>
+												      <small><span>zip:</span><span>{step.zip}</span></small>
+												    </div>
+												    <p className="mb-1">{step.address}</p>
+												    <small><span>Slot Available: </span><span>{step.chekUpDate}</span></small>
+												    <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#appointmentBookedModal" onClick={this.hospitalSelectedForCheckUp.bind(this, step)}>Choose</button>
+												</div>
+							            	) : null}
+										</div>}
+									</div>
+							}
 			        	</TabContent>
 			        </div>
 			    </Tabs>
@@ -256,15 +296,18 @@ class UserHome extends Component {
 		        <div className="modal-dialog">
 		            <div className="modal-content">
 		                <div className="modal-header">
-		                    <h4 className="modal-title">Registration Successful!</h4>
+		                    <h4 className="modal-title">Organ Registration</h4>
 		                    <button type="button" className="close" data-dismiss="modal">&times;</button>
 		                </div>
 		                <div className="modal-body">
-		                    <p>Congratulations on taking first step towards saving a life!! Now you can schedule an appointment at nearest hospital.</p>
+		                	{this.state.handleOrganRegistrationError=="" ? 
+		                    	<p>Congratulations on taking first step towards saving a life!! Now you can schedule an appointment at nearest hospital.</p>
+		                    	: <p>{this.state.handleOrganRegistrationError}</p>
+		                	}
 		                </div>
 		                <div className="modal-footer">
 		                    <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={() => {
-                            this.props.history.push('/login')
+                            this.props.dispatch(this.props.retriveDonorOrgans(this.props))
                         }}>Close</button>
 		                </div>
 		            </div>
@@ -282,7 +325,7 @@ class UserHome extends Component {
 		                </div>
 		                <div className="modal-footer">
 		                    <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={() => {
-                            this.props.history.push('/login')
+                            this.props.dispatch(this.props.retriveDonorAppts(this.props))
                         }}>Close</button>
 		                </div>
 		            </div>
