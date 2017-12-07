@@ -67,6 +67,7 @@ exports.createUnosAppointment = function(req, res) {
         sourceHospital: req.body.targetHospital,
         recId: req.body.recId,
         organ: req.body.organ,
+        donorId: req.body.donorId,
         status: 'active',
         type: 'transplant'
     });
@@ -152,7 +153,7 @@ exports.getAllAppts = function (req, res) {
 exports.scheduledTransplantAppts = function (req, res) {
     var sql = Appointment.find().where('type').equals('transplant');
 
-    sql.populate("recId").populate("organ").populate("sourceHospital")
+    sql.populate("donorId").populate("recId").populate("organ").populate("sourceHospital")
         .exec(function(err, appts){
             if(err) {
                 res.status(500).send({message: "Some error occurred while retrieving appts."});

@@ -51,6 +51,9 @@ export default function actionReducer (state = defaultState, action){
 			newState.registerFailed= true;
 			newState.registerMsg= action.payload.message;
 			return newState;
+		case 'handleLogoutSuccess':
+			newState.isloggedIn= false;
+			return newState;
 		case 'retriveDonorByEmailSuccess':
 			newState.name= action.payload.name;
 			newState.firstName= action.payload.firstName;

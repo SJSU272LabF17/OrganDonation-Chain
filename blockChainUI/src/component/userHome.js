@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { retriveDonorByEmail, registerDonorOrgan, getHospitalsByZip, hospitalSelectedForCheckUp, retriveDonorAppts, retriveDonorOrgans } from '../actions/allActions';
+import { retriveDonorByEmail, registerDonorOrgan, getHospitalsByZip, hospitalSelectedForCheckUp, retriveDonorAppts, retriveDonorOrgans, handleLogout } from '../actions/allActions';
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux';
 
 const mapStateToProps = (state) => {
@@ -22,7 +22,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  let actions = { retriveDonorByEmail, registerDonorOrgan, getHospitalsByZip, hospitalSelectedForCheckUp, retriveDonorAppts, retriveDonorOrgans};
+  let actions = { retriveDonorByEmail, registerDonorOrgan, getHospitalsByZip, hospitalSelectedForCheckUp, retriveDonorAppts, retriveDonorOrgans, handleLogout};
   return { ...actions, dispatch };
 }
 
@@ -104,12 +104,11 @@ class UserHome extends Component {
 		}
 	}
 
-  handleLogout(){
-  	sessionStorage.removeItem('userType');
-  	sessionStorage.removeItem('userId');
-  	this.setState({showLogout:!this.state.showLogout});
-  	this.props.history.push('/login');
-  }
+	handleLogout(){
+		this.props.dispatch(this.props.handleLogout());
+		this.setState({showLogout:!this.state.showLogout});
+		this.props.history.push('/login');
+	}
 
   hospitalSelectedForCheckUp(hospital){
   	this.props.dispatch(this.props.hospitalSelectedForCheckUp(hospital, this.props));
