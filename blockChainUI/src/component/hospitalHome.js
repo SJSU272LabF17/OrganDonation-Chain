@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import {} from '../actions/allActions';
 import Collapsible from 'react-collapsible';
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux';
-import { retriveTestingAppts, handleApproveOrgan, registerRecepeint, retriveTransplantAppts, handleTransplantOrgan } from '../actions/allActions';
+import { retriveTestingAppts, handleApproveOrgan, registerRecepeint, retriveTransplantAppts, handleTransplantOrgan, handleLogout } from '../actions/allActions';
 
 const mapStateToProps = (state) => {
   return {
@@ -18,7 +18,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  let actions = {retriveTestingAppts, handleApproveOrgan, registerRecepeint, retriveTransplantAppts, handleTransplantOrgan};
+  let actions = {retriveTestingAppts, handleApproveOrgan, registerRecepeint, retriveTransplantAppts, handleTransplantOrgan, handleLogout};
   return { ...actions, dispatch };
 }
 
@@ -47,10 +47,12 @@ class HospitalHome extends Component {
 			class2Antigen:"",
 			organSpecificInfo:"",
 			doctorNotes:"",
-			tranplantCompleted: false,
 			currentOrgan:"",
 			currentDonor: {},
-			showSecondMarble:false
+			showSecondMarble:"",
+			tranplantCompleted: "",
+			currentDonorId:"",
+			currentRecepeint:{}
 	     }
     	this.handleLogout = this.handleLogout.bind(this);
     	this.handleDropdownClick = this.handleDropdownClick.bind(this);
@@ -80,6 +82,8 @@ class HospitalHome extends Component {
 	    this.registerRecepeint = this.registerRecepeint.bind(this);
 	    this.retriveTransplantAppts = this.retriveTransplantAppts.bind(this);
 	    this.showDonor = this.showDonor.bind(this);
+	    this.showOrganInfo = this.showOrganInfo.bind(this);
+	    this.showRecepientInfo = this.showRecepientInfo.bind(this);
 	}
 
 	handleDropdownClick(e){
@@ -92,7 +96,7 @@ class HospitalHome extends Component {
 
     handleApproveOrgan(){
     	this.props.dispatch(this.props.handleApproveOrgan(this.state));
-    	this.setState({showSecondMarble: true});
+    	this.setState({showSecondMarble: this.state.appointmentId});
     }
 
 	handleFNChange(event){
@@ -178,19 +182,21 @@ class HospitalHome extends Component {
 	}
 
 	handleLogout(){
-		sessionStorage.removeItem('userType');
-		sessionStorage.removeItem('userId');
+		this.props.dispatch(this.props.handleLogout());
 		this.setState({showLogout:!this.state.showLogout});
 		this.props.history.push('/login');
 	}
 
 	handleTransplantOrgan(){
-		this.setState({tranplantCompleted:true});
+		this.setState({tranplantCompleted:this.state.appointmentId});
 		this.props.dispatch(this.props.handleTransplantOrgan(this.state));
 	}
 
 	setCurrentOrgan(tempAppointment){
 		this.setState({currentOrgan:tempAppointment.organ._id, appointmentId:tempAppointment._id});
+		if(tempAppointment.donorId && tempAppointment.donorId._id){
+			this.setState({currentDonorId:tempAppointment.donorId._id});
+		}
 	}
 
 	retriveTestingAppts(){
@@ -207,6 +213,14 @@ class HospitalHome extends Component {
 
 	showDonor(temp){
 		this.setState({currentDonor:temp});
+	}
+
+	showOrganInfo(temp){
+		this.setState({currentOrganInfo:temp});
+	}
+
+	showRecepientInfo(temp){
+		this.setState({currentRecepeint:temp});
 	}
 
 	render() {
@@ -268,12 +282,12 @@ class HospitalHome extends Component {
 					            </nav>
 					            <div className="row">
 					            	{this.props.testingAppts && this.props.testingAppts.length>0 ? this.props.testingAppts.map(step =>
-									            <div className={"col-md-4 patientBox "+(this.state.showSecondMarble ? "iconDisabled ": "" )+((step.organ && step.organ.organTestInfo) || step.status=="inactive" ? "hideBlock" : "")}>
+									            <div className={"col-md-4 patientBox "+(this.state.showSecondMarble==step._id ? "iconDisabled ": "" )+((step.organ && step.organ.organTestInfo) || step.status=="inactive" ? "hideBlock" : "")}>
 									            	<div className="patientBoxInner">
 										            	<div className="boxTitle" data-toggle="modal" data-target="#organDetailsModal">{step.donorId.firstName+" "+step.donorId.lastName}</div>
 										            	<div className="">
 											            	<img className="patientBoxIcons" data-toggle="modal" data-target="#organDetailsModal" src="images/registered.png" alt="userIcon" onClick={this.showDonor.bind(this, step.donorId)}/>
-											            	{this.state.showSecondMarble ? <img height="80px" data-toggle="modal" data-target="#chekUpDetailsModal" className="patientBoxIcons organToOffer" src="images/registered1.png" alt="userIcon" /> : null}
+											            	{this.state.showSecondMarble==step._id ? <img height="80px" data-toggle="modal" data-target="#chekUpDetailsModal" className="patientBoxIcons organToOffer" src="images/registered1.png" alt="userIcon" /> : null}
 											            	<img className="patientBoxIcons float-right" data-toggle="modal" data-target="#verfiyModal" src="images/add.png" alt="userIcon" onClick={this.setCurrentOrgan.bind(this, step)}/>
 											            </div>
 											        </div>
@@ -395,15 +409,15 @@ class HospitalHome extends Component {
 						            </nav>
 						            <div className="row">
 						            	{this.props.transplantAppts && this.props.transplantAppts.length>0 ? this.props.transplantAppts.map(step =>
-								            <div className="col-md-5 patientBox">
-								            	<div className={"patientBoxInner "+ (this.state.tranplantCompleted ? 'iconDisabled' :null )}>
-									            	<div className="boxTitle" data-toggle="modal" data-target="#organDetailsModal">{step.donorId ? step.donorId.firstName+" "+step.donorId.lastName: ""}</div>
+								            <div className={"col-md-5 patientBox "+(this.state.tranplantCompleted==step._id ? "iconDisabled ": "" )+(step.status=="inactive" ? "hideBlock" : "")}>
+								            	<div className="patientBoxInner">
+									            	<div className="boxTitle" data-toggle="modal" data-target="#organDetailsModal">{step.donorId ? step.donorId.firstName+" "+step.donorId.lastName : ""}</div>
 									            	<div className="">
-										            	<img className="patientBoxIcons" data-toggle="modal" data-target="#organDetailsModal" src="images/registered.png" alt="userIcon" />
-										            	<img height="80px" className="patientBoxIcons organToOffer" data-toggle="modal" data-target="#chekUpDetailsModal" src="images/registered1.png" alt="userIcon" />
-										            	<img height="80px" className="patientBoxIcons unos" data-toggle="modal" data-target="#recepientDetailsModal" src="images/unos.png" alt="userIcon" />
-										            	{this.state.tranplantCompleted ? <img className="patientBoxIcons organToOffer" src="images/logo.jpg" alt="userIcon" /> :
-										            		<img className="patientBoxIcons float-right" data-toggle="modal" data-target="#tranplantModal" src="images/add.png" alt="userIcon" onClick={this.setCurrentOrgan.bind(this, step)}/>}
+										            	<img className="patientBoxIcons" data-toggle="modal" data-target="#organDetailsModal" src="images/registered.png" alt="userIcon" onClick={this.showDonor.bind(this, step.donorId)}/>
+										            	<img height="80px" data-toggle="modal" data-target="#chekUpDetailsModal" className="patientBoxIcons organToOffer" src="images/registered1.png" alt="userIcon"  onClick={this.showOrganInfo.bind(this, step)}/>
+										            	<img height="80px" className="patientBoxIcons unos" data-toggle="modal" data-target="#recepientDetailsModal" src="images/unos.png" alt="userIcon"  onClick={this.showRecepientInfo.bind(this, step.recId)}/>
+										            	{this.state.tranplantCompleted==step._id ? <img className="patientBoxIcons organToOffer" src="images/logo.jpg" alt="userIcon" /> :
+										            	 <img className="patientBoxIcons float-right" data-toggle="modal" data-target="#tranplantModal" src="images/add.png" alt="userIcon" onClick={this.setCurrentOrgan.bind(this, step)}/>}
 										            </div>
 										        </div>
 							                </div>)
@@ -454,39 +468,11 @@ class HospitalHome extends Component {
 			                    <button type="button" className="close" data-dismiss="modal">&times;</button>
 			                </div>
 			                <div className="modal-body">
-					            <Collapsible className="col-md-12 text-right" trigger="Donor's Data">
-				                    Blood Type:
-				                    <input className="text-input-input autofocus" type="text" value={this.props.bloodType} onChange={this.handleBloodTypeChange}/>
-				                    Class1 Protein:
-				                    <input className="text-input-input autofocus" type="text" value={this.props.class1Protein} onChange={this.handleClass1ProteinChange} />
-				                    Class2 Protein:
-				                    <input className="text-input-input autofocus" type="text" value={this.props.class2Protein} onChange={this.handleClass2ProteinChange} />
-				                    Lymphocytes:
-				                    <input className="text-input-input autofocus" type="text" value={this.props.lymphocytes} onChange={this.handleLymphocytesChange} />
-				                    HLA:
-				                    <input className="text-input-input autofocus" type="text" value={this.props.HLA} onChange={this.handleHLAChange} />
-				                    Class2 Antigen:
-				                    <input className="text-input-input autofocus" type="text" value={this.props.class2Antigen} onChange={this.handleClass2AntigenChange} />
-				                    Organ Specific Info:
-				                    <input className="text-input-input autofocus" type="text" value={this.props.organSpecificInfo} onChange={this.handleOrganSpecificInfoChange} />
+					            <Collapsible className="col-md-12 text-right" trigger="Donor's Transplant Data">
 				                    Doctor Notes:
 				                    <input className="text-input-input autofocus" type="text" value={this.props.doctorNotes} onChange={this.handleDoctorNotesChange} />
 					            </Collapsible>
-					            <Collapsible className="col-md-12 text-right" trigger="Recipient's Data">						            
-				                    Blood Type:
-				                    <input className="text-input-input autofocus" type="text" value={this.props.bloodType} onChange={this.handleBloodTypeChange}/>
-				                    Class1 Protein:
-				                    <input className="text-input-input autofocus" type="text" value={this.props.class1Protein} onChange={this.handleClass1ProteinChange} />
-				                    Class2 Protein:
-				                    <input className="text-input-input autofocus" type="text" value={this.props.class2Protein} onChange={this.handleClass2ProteinChange} />
-				                    Lymphocytes:
-				                    <input className="text-input-input autofocus" type="text" value={this.props.lymphocytes} onChange={this.handleLymphocytesChange} />
-				                    HLA:
-				                    <input className="text-input-input autofocus" type="text" value={this.props.HLA} onChange={this.handleHLAChange} />
-				                    Class2 Antigen:
-				                    <input className="text-input-input autofocus" type="text" value={this.props.class2Antigen} onChange={this.handleClass2AntigenChange} />
-				                    Organ Specific Info:
-				                    <input className="text-input-input autofocus" type="text" value={this.props.organSpecificInfo} onChange={this.handleOrganSpecificInfoChange} />
+					            <Collapsible className="col-md-12 text-right" trigger="Recipient's Transplant Data">
 				                    Doctor Notes:
 				                    <input className="text-input-input autofocus" type="text" value={this.props.doctorNotes} onChange={this.handleDoctorNotesChange} />
 					            </Collapsible>
@@ -506,46 +492,46 @@ class HospitalHome extends Component {
 			                    <button type="button" className="close" data-dismiss="modal">&times;</button>
 			                </div>
 			                <div className="modal-body">
-			                	<div className="row">
+			                	{this.state.currentOrganInfo && this.state.currentOrganInfo.sourceHospital && this.state.currentOrganInfo.sourceHospital.name ? <div className="row">
 			                		<p className="col-md-3 text-right">Hospital ID:</p>
-				                	<p className="col-md-9 text-left" value={this.props.HospitalId}></p>
-				                </div>
-			                	<div className="row">
+				                	<p className="col-md-9 text-left">{this.state.currentOrganInfo.sourceHospital.name}</p>
+				                </div> : null }
+			                	{this.state.currentOrganInfo && this.state.currentOrganInfo.organ && this.state.currentOrganInfo.organ.name ? <div className="row">
 			                		<p className="col-md-3 text-right">Organ to Offer:</p>
-				                	<p className="col-md-9 text-left" value={this.props.organToOffer}></p>
-				                </div>
-			                	<div className="row">
+				                	<p className="col-md-9 text-left">{this.state.currentOrganInfo.organ.name}</p>
+				                </div> : null }
+			                	{this.state.currentOrganInfo && this.state.currentOrganInfo.organ && this.state.currentOrganInfo.organ.organTestInfo && this.state.currentOrganInfo.organ.organTestInfo.bloodType ? <div className="row">
 			                		<p className="col-md-3 text-right">Blood Type:</p>
-				                	<p className="col-md-9 text-left" value={this.props.bloodType}></p>
-				                </div>
-			                	<div className="row">
+				                	<p className="col-md-9 text-left">{this.state.currentOrganInfo.organ.organTestInfo.bloodType}</p>
+				                </div> : null }
+			                	{this.state.currentOrganInfo && this.state.currentOrganInfo.organ && this.state.currentOrganInfo.organ.organTestInfo && this.state.currentOrganInfo.organ.organTestInfo.class1Protein ? <div className="row">
 			                		<p className="col-md-3 text-right">Class1 Protein:</p>
-				                	<p className="col-md-9 text-left" value={this.props.class1Protein}></p>
-				                </div>
-			                	<div className="row">
+				                	<p className="col-md-9 text-left">{this.state.currentOrganInfo.organ.organTestInfo.class1Protein}</p>
+				                </div> : null }
+			                	{this.state.currentOrganInfo && this.state.currentOrganInfo.organ && this.state.currentOrganInfo.organ.organTestInfo && this.state.currentOrganInfo.organ.organTestInfo.class2Protein ? <div className="row">
 			                		<p className="col-md-3 text-right">Class2 Protein:</p>
-				                	<p className="col-md-9 text-left" value={this.props.class2Protein}></p>
-				                </div>
-			                	<div className="row">
+				                	<p className="col-md-9 text-left">{this.state.currentOrganInfo.organ.organTestInfo.class2Protein}</p>
+				                </div> : null }
+			                	{this.state.currentOrganInfo && this.state.currentOrganInfo.organ && this.state.currentOrganInfo.organ.organTestInfo && this.state.currentOrganInfo.organ.organTestInfo.lymphocytes ? <div className="row">
 			                		<p className="col-md-3 text-right">Lymphocytes:</p>
-				                	<p className="col-md-9 text-left" value={this.props.lymphocytes}></p>
-				                </div>
-			                	<div className="row">
+				                	<p className="col-md-9 text-left">{this.state.currentOrganInfo.organ.organTestInfo.lymphocytes}</p>
+				                </div> : null }
+			                	{this.state.currentOrganInfo && this.state.currentOrganInfo.organ && this.state.currentOrganInfo.organ.organTestInfo && this.state.currentOrganInfo.organ.organTestInfo.HLA ? <div className="row">
 			                		<p className="col-md-3 text-right">HLA:</p>
-				                	<p className="col-md-9 text-left" value={this.props.HLA}></p>
-				                </div>
-			                	<div className="row">
+				                	<p className="col-md-9 text-left">{this.state.currentOrganInfo.organ.organTestInfo.HLA}</p>
+				                </div> : null }
+			                	{this.state.currentOrganInfo && this.state.currentOrganInfo.organ && this.state.currentOrganInfo.organ.organTestInfo && this.state.currentOrganInfo.organ.organTestInfo.class2Antigen ? <div className="row">
 			                		<p className="col-md-3 text-right">Class2 Antigen:</p>
-				                	<p className="col-md-9 text-left" value={this.props.class2Antigen}></p>
-				                </div>
-			                	<div className="row">
+				                	<p className="col-md-9 text-left">{this.state.currentOrganInfo.organ.organTestInfo.class2Antigen}</p>
+				                </div> : null }
+			                	{this.state.currentOrganInfo && this.state.currentOrganInfo.organ && this.state.currentOrganInfo.organ.organTestInfo && this.state.currentOrganInfo.organ.organTestInfo.organSpecificInfo ? <div className="row">
 			                		<p className="col-md-3 text-right">Organ Specific Info:</p>
-				                	<p className="col-md-9 text-left" value={this.props.organSpecificInfo}></p>
-				                </div>
-			                	<div className="row">
+				                	<p className="col-md-9 text-left">{this.state.currentOrganInfo.organ.organTestInfo.organSpecificInfo}</p>
+				                </div> : null }
+			                	{this.state.currentOrganInfo && this.state.organ && this.state.currentOrganInfo.organ.organTestInfo && this.state.currentOrganInfo.organ.organTestInfo.doctorNotes ? <div className="row">
 			                		<p className="col-md-3 text-right">Doctor Notes:</p>
-				                	<p className="col-md-9 text-left" value={this.props.doctorNotes}></p>
-				                </div>
+				                	<p className="col-md-9 text-left">{this.state.currentOrganInfo.organ.organTestInfo.doctorNotes}</p>
+				                </div> : null }
 			                </div>
 			                <div className="modal-footer">
 			                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -601,45 +587,57 @@ class HospitalHome extends Component {
 			                </div>
 			                <div className="modal-body">
 			                	<div className="row">
-			                		<p className="col-md-3 text-right">Hospital ID (where recipient is registered):</p>
-				                	<p className="col-md-9 text-left" value={this.props.HospitalId}></p>
+				                    <p className="col-md-3 text-right">Name:</p>
+				                    <p className="col-md-9 text-left">{this.state.currentRecepeint.name}</p> 
+				                </div>
+					            <div className="row">
+				                    <p className="col-md-3 text-right">Age:</p>
+				                    <p className="col-md-9 text-left">{this.state.currentRecepeint.age}</p> 
+				                </div>
+					            <div className="row">
+				                    <p className="col-md-3 text-right">Address:</p>
+				                    <p className="col-md-9 text-left">{this.state.currentRecepeint.address ? this.state.currentRecepeint.address.street+", "+this.state.currentRecepeint.address.zip : ""}</p> 
+				                </div>
+					            <div className="row">
+				                    <p className="col-md-3 text-right">Email:</p>
+				                    <p className="col-md-9 text-left">{this.state.currentRecepeint.email}</p> 
 				                </div>
 			                	<div className="row">
 			                		<p className="col-md-3 text-right">Organ to Needed:</p>
-				                	<p className="col-md-9 text-left" value={this.props.organToOffer}></p>
+				                	<p className="col-md-9 text-left">{this.state.currentRecepeint.organ}</p>
 				                </div>
-			                	<div className="row">
+			                	{this.state.currentRecepeint.testInfo?<div className="row">
 			                		<p className="col-md-3 text-right">Blood Type:</p>
-				                	<p className="col-md-9 text-left" value={this.props.bloodType}></p>
-				                </div>
-			                	<div className="row">
+				                	<p className="col-md-9 text-left">{this.state.currentRecepeint.testInfo.bloodType}</p>
+				                </div>:null}
+			                	{this.state.currentRecepeint.testInfo?<div className="row">
 			                		<p className="col-md-3 text-right">Class1 Protein:</p>
-				                	<p className="col-md-9 text-left" value={this.props.class1Protein}></p>
-				                </div>
-			                	<div className="row">
+				                	<p className="col-md-9 text-left">{this.state.currentRecepeint.testInfo.class1Protein}</p>
+				                </div>:null}
+			                	{this.state.currentRecepeint.testInfo?<div className="row">
 			                		<p className="col-md-3 text-right">Class2 Protein:</p>
-				                	<p className="col-md-9 text-left" value={this.props.class2Protein}></p>
-				                </div>
-			                	<div className="row">
+				                	<p className="col-md-9 text-left">{this.state.currentRecepeint.testInfo.class2Protein}</p>
+				                </div>:null}
+			                	{this.state.currentRecepeint.testInfo?<div className="row">
 			                		<p className="col-md-3 text-right">Lymphocytes:</p>
-				                	<p className="col-md-9 text-left" value={this.props.lymphocytes}></p>
-				                </div>
-			                	<div className="row">
+				                	<p className="col-md-9 text-left">{this.state.currentRecepeint.testInfo.lymphocytes}</p>
+				                </div>:null}
+			                	{this.state.currentRecepeint.testInfo?<div className="row">
 			                		<p className="col-md-3 text-right">HLA:</p>
-				                	<p className="col-md-9 text-left" value={this.props.HLA}></p>
-				                </div>
-			                	<div className="row">
+				                	<p className="col-md-9 text-left">{this.state.currentRecepeint.testInfo.HLA}</p>
+				                </div>:null}
+			                	{this.state.currentRecepeint.testInfo?<div className="row">
 			                		<p className="col-md-3 text-right">Class2 Antigen:</p>
-				                	<p className="col-md-9 text-left" value={this.props.class2Antigen}></p>
-				                </div>
-			                	<div className="row">
+				                	<p className="col-md-9 text-left">{this.state.currentRecepeint.testInfo.class2Antigen}</p>
+				                </div>:null}
+			                	{this.state.currentRecepeint.testInfo?<div className="row">
 			                		<p className="col-md-3 text-right">Organ Specific Info:</p>
-				                	<p className="col-md-9 text-left" value={this.props.organSpecificInfo}></p>
-				                </div>
-			                	<div className="row">
+				                	<p className="col-md-9 text-left">{this.state.currentRecepeint.testInfo.organSpecificInfo}</p>
+				                </div>:null}
+			                	{this.state.currentRecepeint.testInfo?<div className="row">
 			                		<p className="col-md-3 text-right">Doctor Notes:</p>
-				                	<p className="col-md-9 text-left" value={this.props.doctorNotes}></p>
-				                </div>
+				                	<p className="col-md-9 text-left">{this.state.currentRecepeint.testInfo.doctorNotes}</p>
+				                </div>:null}
 			                </div>
 			                <div className="modal-footer">
 			                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>

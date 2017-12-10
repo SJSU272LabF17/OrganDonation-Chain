@@ -60,6 +60,14 @@ export function requestRegister(state){
 	}
 }
 
+export function handleLogout(){
+	return function (dispatch) {
+		sessionStorage.removeItem('userType');
+		sessionStorage.removeItem('userId');	
+		return dispatch({type:"handleLogoutSuccess", payload: {}})
+	}
+}
+
 export function retriveDonorByEmail(state){
 	return function (dispatch) {
 		let temp = {
@@ -200,21 +208,6 @@ export function handleApproveOrgan(state){
 	}
 }
 
-export function handleTransplantOrgan(state){
-	return function(dispatch){
-		var temp = {
-	        targetHospital : sessionStorage.getItem('userId'),
-	        appointmentId : state.appointmentId,
-	        organ: state.currentOrgan
-		}
-		return axios.post("http://localhost:3001/appointment/complete", temp).then((response) => {
-			 dispatch({type:"handleTransplantOrganSuccess", payload: response.data})
-		}).catch((err) => {
-			 dispatch({type:"handleTransplantOrganFailed", payload: err.response.data})
-		})
-	}
-}
-
 export function registerRecepeint(state){
 	return function(dispatch){
 		var organTestInfoTemp = {
@@ -255,12 +248,29 @@ export function chooseRecepient(recipient, state){
 			date : new Date(),
 			targetHospital : recipient.hospital,
 			recId: recipient._id,
-			organ : recipient.chekUpDate
+			organ : state.currentOrgan,
+			appointmentId : state.appointmentId,
+			donorId : state.currentDonorId
 		};
 		return axios.post("http://localhost:3001/appointment/unos", temp).then((response) => {
 			 dispatch({type:"hospitalSelectedForCheckUpSuccess", payload: response.data})
 		}).catch((err) => {
 			 dispatch({type:"hospitalSelectedForCheckUpFailed", payload: err.response.data})
 		})		
+	}
+}
+
+export function handleTransplantOrgan(state){
+	return function(dispatch){
+		var temp = {
+	        targetHospital : sessionStorage.getItem('userId'),
+	        appointmentId : state.appointmentId,
+	        organ: state.currentOrgan
+		}
+		return axios.post("http://localhost:3001/appointment/complete", temp).then((response) => {
+			 dispatch({type:"handleTransplantOrganSuccess", payload: response.data})
+		}).catch((err) => {
+			 dispatch({type:"handleTransplantOrganFailed", payload: err.response.data})
+		})
 	}
 }

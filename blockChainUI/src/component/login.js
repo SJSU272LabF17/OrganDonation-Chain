@@ -125,7 +125,7 @@ class Login extends Component {
     this.setState({showsignIn: !this.state.showsignIn});
   }
 
-  componentWillMount(){
+  componentDidMount(){
     if(sessionStorage.getItem('userType')=="Donor"){
       this.props.history.push('/userHome');
     } else if(sessionStorage.getItem('userType')=="Hospital"){

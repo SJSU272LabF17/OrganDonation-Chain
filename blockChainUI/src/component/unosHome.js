@@ -46,13 +46,12 @@ class UnosHome extends Component {
 			class2Antigen:"",
 			organSpecificInfo:"",
 			doctorNotes:"",
-			tranplantCompleted: false,
 			currentDonor: {},
-			currentOrganInfo: {}
+			currentOrganInfo: {},
+			currentDonorId:""
 	     }
     	this.handleLogout = this.handleLogout.bind(this);
     	this.handleDropdownClick = this.handleDropdownClick.bind(this);
-    	this.handleApproveOrgan = this.handleApproveOrgan.bind(this);
 
 	    this.handleFNChange = this.handleFNChange.bind(this);
 	    this.handleLNChange = this.handleLNChange.bind(this);
@@ -73,7 +72,6 @@ class UnosHome extends Component {
 	    this.handleDoctorNotesChange = this.handleDoctorNotesChange.bind(this);
 	    this.handleOrganToOfferChange = this.handleOrganToOfferChange.bind(this);
 	    this.handleHospitalIdChange = this.handleHospitalIdChange.bind(this);
-	    this.handleTransplantOrgan = this.handleTransplantOrgan.bind(this);
 	    this.retriveTestingAppts = this.retriveTestingAppts.bind(this);
 	    this.showDonor = this.showDonor.bind(this);
 	    this.showOrganInfo = this.showOrganInfo.bind(this);
@@ -87,10 +85,6 @@ class UnosHome extends Component {
     
     handleShareSearchChange(event){
     	this.setState({shareSearch: event.target.value});
-    }
-
-    handleApproveOrgan(){
-    	//this.props.dispatch(this.props.handleApproveOrgan(this.state));
     }
 
 	handleFNChange(event){
@@ -175,11 +169,6 @@ class UnosHome extends Component {
 	handleLogout(){
 	}
 
-	handleTransplantOrgan(){
-		this.setState({tranplantCompleted:true});
-		//this.props.dispatch(this.props.handleTransplantOrgan(this.state));
-	}
-
 	retriveTestingAppts(){
 		this.props.dispatch(this.props.retriveTestingAppts(this.props));
 	}
@@ -195,11 +184,15 @@ class UnosHome extends Component {
 	setCurrentOrgan(tempAppointment){
 		this.setState({currentOrgan:tempAppointment.organ._id, appointmentId:tempAppointment._id});
 		this.props.dispatch(this.props.retriveRecList(this.state));
+		if(tempAppointment.donorId && tempAppointment.donorId._id){
+			this.setState({currentDonorId:tempAppointment.donorId._id});
+		}
 	}
 
 	chooseRecepient(recepient){
 		this.props.dispatch(this.props.chooseRecepient(recepient, this.state));
 		this.props.dispatch(this.props.retriveTestingAppts(this.props));
+		this.setState({showSecondMarble: this.state.appointmentId});
 	}
 
 	render() {
@@ -231,13 +224,13 @@ class UnosHome extends Component {
 					            </nav>
 					            <div className="row">
 					            	{this.props.testingAppts && this.props.testingAppts.length>0 ? this.props.testingAppts.map(step =>
-							            <div className={"col-md-4 patientBox "+(this.state.showSecondMarble ? "iconDisabled ": "" )+(step.organ && step.organ.organTestInfo && step.status!="inactive" ?  "" : "hideBlock")}>
+							            <div className={"col-md-4 patientBox "+(this.state.showSecondMarble==step._id ? "iconDisabled ": "" )+(step.organ && step.organ.organTestInfo && step.status!="inactive" ?  "" : "hideBlock")}>
 							            	<div className="patientBoxInner">
 								            	<div className="boxTitle" data-toggle="modal" data-target="#organDetailsModal">{step.donorId.firstName+" "+step.donorId.lastName}</div>
 								            	<div className="">
 									            	<img className="patientBoxIcons" data-toggle="modal" data-target="#organDetailsModal" src="images/registered.png" alt="userIcon" onClick={this.showDonor.bind(this, step.donorId)}/>
 									            	{ step.organ && step.organ.organTestInfo ? <img height="80px" className="patientBoxIcons organToOffer" data-toggle="modal" data-target="#chekUpDetailsModal" src="images/registered1.png" alt="userIcon" onClick={this.showOrganInfo.bind(this, step)}/> : null }
-									            	{this.state.tranplantCompleted ? <img className="patientBoxIcons organToOffer" src="images/unos.jpg" alt="userIcon" /> :
+									            	{this.state.showSecondMarble==step._id ? <img className="patientBoxIcons organToOffer" src="images/unos.png" alt="userIcon" /> :
 									            		<img className="patientBoxIcons float-right" data-toggle="modal" data-target="#chooseRecepientModal" src="images/add.png" alt="userIcon" onClick={this.setCurrentOrgan.bind(this, step)}/>}
 									            </div>
 									        </div>
