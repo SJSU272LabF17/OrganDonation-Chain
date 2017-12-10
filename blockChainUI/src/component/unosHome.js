@@ -206,7 +206,7 @@ class UnosHome extends Component {
 				            </div>
 				            <ul className="list-unstyled components">
 				                <li className="active" onClick={this.retriveTestingAppts}>
-				                    <TabLink to="section-checkUp"><a href="#section-profile" data-toggle="tab" className="tab-toggle active">Assign recepient</a></TabLink>
+				                    <TabLink to="section-checkUp"><a href="#section-profile" data-toggle="tab" className="tab-toggle active">Assign Recipient</a></TabLink>
 				                </li>
 				                <li>
 				                    <TabLink to="section-hospital"><a href="#section-organ" data-toggle="tab" className="tab-toggle">Register Hospital</a></TabLink>
@@ -218,14 +218,14 @@ class UnosHome extends Component {
 					            <nav className="navbar navbar-default">
 					                <div className="container-fluid">
 					                    <div className="navbar-header">
-					                        <h2>Assign recepient</h2>
+					                        <h2>Assign Recipient</h2>
 					                    </div>
 					                </div>
 					            </nav>
 					            <div className="row">
 					            	{this.props.testingAppts && this.props.testingAppts.length>0 ? this.props.testingAppts.map(step =>
-							            <div className={"col-md-4 patientBox "+(this.state.showSecondMarble==step._id ? "iconDisabled ": "" )+(step.organ && step.organ.organTestInfo && step.status!="inactive" ?  "" : "hideBlock")}>
-							            	<div className="patientBoxInner">
+							            <div className={"col-md-5 patientBox "+(this.state.showSecondMarble==step._id ? "iconDisabled ": "" )+(step.organ && step.organ.organTestInfo && step.status!="inactive" ?  "" : "hideBlock")}>
+							            	<div className="patientBoxInner minWidth">
 								            	<div className="boxTitle" data-toggle="modal" data-target="#organDetailsModal">{step.donorId.firstName+" "+step.donorId.lastName}</div>
 								            	<div className="">
 									            	<img className="patientBoxIcons" data-toggle="modal" data-target="#organDetailsModal" src="images/registered.png" alt="userIcon" onClick={this.showDonor.bind(this, step.donorId)}/>

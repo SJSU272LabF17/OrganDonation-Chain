@@ -711,6 +711,9 @@ a.article, a.article:hover {
   border: 2px solid gray;
   border-radius: 25px;  
 }
+.minWidth{
+  min-width: 475px !important;  
+}
 .patientBoxIcons{
   height: 100px;
 }
