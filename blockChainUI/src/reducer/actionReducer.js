@@ -15,7 +15,8 @@ const defaultState = {
     showRegisterDonorOrganSuccess: false,
     donorAppts : [],
     donorOrganList : [],
-    recepeintList : []
+    recepeintList : [],
+    latestTransactions : []
 }
 
 export default function actionReducer (state = defaultState, action){
@@ -45,7 +46,7 @@ export default function actionReducer (state = defaultState, action){
 			newState.userType= action.payload.userType;
 		    newState.email= action.payload.email;
 			newState.registerFailed= !action.payload.success;
-			newState.registerMsg= action.payload.message;
+			newState.registerMsg= "Registration Completed Successfully!";
 			return newState;
 		case 'registerFailed':
 			newState.registerFailed= true;
@@ -97,6 +98,9 @@ export default function actionReducer (state = defaultState, action){
 		 case 'retriveRecListSuccess':
 		 	newState.recepeintList = action.payload;
 		 	return newState;
+		case 'getLatestTransactionsSuccess':
+			newState.latestTransactions = action.payload;
+			return newState;
 		default:
 			return newState;
 	}

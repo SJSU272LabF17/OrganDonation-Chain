@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import Scroll from 'react-scroll';
 import {scroller} from 'react-scroll';
-
+import { getLatestTransactions } from '../actions/allActions';
+import Pagination from 'react-js-pagination';
 
 let Link       = Scroll.Link;
 let Element    = Scroll.Element;
@@ -9,7 +11,25 @@ let Events     = Scroll.Events;
 let scroll     = Scroll.animateScroll;
 let scrollSpy  = Scroll.scrollSpy;
 
-export default class Landing extends Component {
+const mapStateToProps = (state) => {
+  return {
+    latestTransactions: state.actionReducer.latestTransactions
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  let actions = {getLatestTransactions};
+  return { ...actions, dispatch };
+}
+
+class Landing extends Component {
+	constructor(props) {
+    	super(props);    	
+	    this.state = {
+	    	activePage: 1
+	    };
+    	this.handlePageChange = this.handlePageChange.bind(this);
+    }
 	componentDidMount() { 
 		Events.scrollEvent.register('begin', function(to, element) {
 			console.log("begin", arguments);
@@ -17,7 +37,8 @@ export default class Landing extends Component {
 		Events.scrollEvent.register('end', function(to, element) {
 			console.log("end", arguments);
 		}); 
-		scrollSpy.update(); 
+		scrollSpy.update();
+		this.props.dispatch(this.props.getLatestTransactions());
 	}
 	componentWillUnmount() {
 		Events.scrollEvent.remove('begin');
@@ -38,6 +59,16 @@ export default class Landing extends Component {
 	handleSetActive(to) {
 		console.log(to);
 	}
+	handlePageChange(pageNumber){
+		let tempTransactions = this.props.latestTransactions.slice((pageNumber-1)*5,pageNumber*5);
+		this.setState({latestPageTransactions: []});
+		this.setState({latestPageTransactions: tempTransactions});
+		this.setState({activePage: pageNumber});
+	}
+	componentWillReceiveProps(nextProps){
+		this.setState({latestPageTransactions: nextProps.latestTransactions.slice(0,5)});
+	}
+
   render() {
     return (
         <div className="landingPage row">
@@ -49,6 +80,11 @@ export default class Landing extends Component {
 							Home
 						</Link>
 					</li>
+					<li>
+						<Link activeClass="active" to="transactions" spy={true} smooth={true} offset={50} duration={500}>
+				        	Latest Transactions
+				        </Link>
+			        </li>
 					<li>
 						<Link activeClass="active" to="data" spy={true} smooth={true} offset={50} duration={500}>
 				        	Data
@@ -79,13 +115,34 @@ export default class Landing extends Component {
 					<a onClick={() => this.props.history.push('/login')} className="btn">I am in!</a>
 				</section>
 			</Element>
+			<Element name="transactions" className="element">
+				<section className="our-work">
+					<h3 className="title">Latest Transactions</h3>
+		            <div className="col-md-12">
+			            <p className="col-md-6 text-left smallHeader"><span>Transaction ID</span></p>
+			            <p className="col-md-3 text-left smallHeader"><span>Transaction Type</span></p>
+			            <p className="col-md-3 text-left smallHeader"><span>Transaction Time</span></p>
+			        </div>
+					{this.state.latestPageTransactions && this.state.latestPageTransactions.length>0 ? this.state.latestPageTransactions.map(step =>
+			            <div key={step.transactionId} className="col-md-12">
+		                    <p className="col-md-6 text-left eachTransaction"><span>{step.transactionId}</span></p>
+		                    <p className="col-md-3 text-left eachTransaction"><span>{step.transactionType.split(".")[step.transactionType.split(".").length-1]}</span></p>
+		                    <p className="col-md-3 text-left eachTransaction"><span>{step.transactionTimestamp}</span></p> 
+		                </div>)
+		            : null }
+			        <Pagination activePage={this.state.activePage}
+			          itemsCountPerPage={5}
+			          totalItemsCount={this.props.latestTransactions.length}
+			          pageRangeDisplayed={10}
+			          onChange={this.handlePageChange}/>
+				</section>
+			</Element>
 			<Element name="data" className="element">
 				<section className="our-work">
 					<h3 className="title">Organ Donation Statistics</h3>
 					<p>Currently there are candidates for transplant on the U.S. national waiting list. Nearly 2 out of every 3 people on the waiting list are over the age of 50.
 						Almost 2,000 children under 18 are on the waiting list. Almost 70,000 people (58%) on the list are ethnic minorities.</p>
 					<hr/>
-
 					<ul className="grid">
 						<li className="small backImg1"></li>
 						<li className="large backImg2"></li>
@@ -157,3 +214,8 @@ export default class Landing extends Component {
     )
   }
 }
+
+export default connect(
+  mapStateToProps, 
+  mapDispatchToProps
+)(Landing);

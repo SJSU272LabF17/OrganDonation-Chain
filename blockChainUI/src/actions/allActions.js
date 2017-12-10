@@ -136,7 +136,7 @@ export function retriveTestingAppts(state){
 		return axios.get("http://localhost:3001/appointment/testing").then((response) => {
 			 dispatch({type:"retriveTestingApptsSuccess", payload: response.data})
 		}).catch((err) => {
-			 dispatch({type:"retriveTestingApptsFailed", payload: err.response.data})
+			 dispatch({type:"retriveTestingApptsFailed", payload: err.response})
 		})
 	}
 }
@@ -271,6 +271,16 @@ export function handleTransplantOrgan(state){
 			 dispatch({type:"handleTransplantOrganSuccess", payload: response.data})
 		}).catch((err) => {
 			 dispatch({type:"handleTransplantOrganFailed", payload: err.response.data})
+		})
+	}
+}
+
+export function getLatestTransactions(state){
+	return function(dispatch){
+		return axios.get("http://localhost:3001/historian").then((response) => {
+			 dispatch({type:"getLatestTransactionsSuccess", payload: response.data})
+		}).catch((err) => {
+			 dispatch({type:"getLatestTransactionsFailed", payload: err.response})
 		})
 	}
 }

@@ -1224,3 +1224,10 @@ footer p a{
 .Collapsible__trigger{
   background: whitesmoke;
 }
+.smallHeader{
+  color: #414a4f;
+  display: inline-block;
+}
+.eachTransaction{
+ display: inline-block; 
+}
