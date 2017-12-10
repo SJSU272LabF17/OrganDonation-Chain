@@ -33,13 +33,13 @@ export default function actionReducer (state = defaultState, action){
 		    newState.zip= action.payload.zip;
 		    newState.phone= action.payload.phone;
 			newState.loginFailed= !action.payload.success;
-			newState.loginMsg= action.payload.message;
+			newState.loginMsg= "Login Successfully!";
 			newState.id= action.payload._id;
 			newState.isloggedIn= true;
 			return newState;
 		case 'loginFailed':
 			newState.loginFailed= true;
-			newState.loginMsg= action.payload.message;
+			newState.loginMsg= "Login failed!";
 			return newState;
 		case 'registerSuccess':
 			newState.name= action.payload.name;
@@ -50,7 +50,7 @@ export default function actionReducer (state = defaultState, action){
 			return newState;
 		case 'registerFailed':
 			newState.registerFailed= true;
-			newState.registerMsg= action.payload.message;
+			newState.registerMsg= "Registration failed!";
 			return newState;
 		case 'handleLogoutSuccess':
 			newState.isloggedIn= false;
