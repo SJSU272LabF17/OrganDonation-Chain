@@ -37,6 +37,9 @@ exports.findAll = function(req, res) {
 };
 
 exports.findAllUserOrgans = function(req, res) {
+    if (req.params.donorId == null) {
+        res.status(400).send({message: "no donorId passed"});
+    }
     var sql = Organ.find().where('donorId').equals(req.params.donorId);
     sql.exec(function(err, organs){
             if(err) {
@@ -44,7 +47,7 @@ exports.findAllUserOrgans = function(req, res) {
             } else {
                 res.send(organs);
             }
-        });
+    });
 };
 
 exports.update = function(req, res) {

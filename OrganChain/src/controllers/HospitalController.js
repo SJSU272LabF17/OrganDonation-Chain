@@ -1,4 +1,7 @@
 var Hospital = require('../models/Hospital.js');
+var request = require('request-promise');
+var config = require('../config/database.config.js');
+const blockchain = config.blockchain + "Hospital";
 
 exports.hospitalLogin = function(req,res) {
     //passport.authenticate('local', function(err, user, info) {
@@ -33,21 +36,41 @@ exports.getAllAppts = function (req, res) {
 exports.create = function(req, res) {
     var sql = Hospital.find().where('name').equals(req.body.name).where('zip').equals(req.body.zip);
     sql.exec(function(err, hospital) {
-        if (err) {
+        if (hospital && hospital.length == 0) {
+            var hospital = new Hospital({name: req.body.name, userType:"Hospital", address: req.body.address, zip: req.body.zip,
+                phone: req.body.phone, email: req.body.email, password: req.body.password, chekUpDate: new Date(Date.now())});
+            hospital.save().then(function(hospital) {
+                hospital.message = "Hospital successfully registered";
+                return hospital;
+            }).then(hospital => {
+                var hospitalCC = {
+                    "$class": "org.organchain.Hospital",
+                    "hospitalId": hospital._id.toString(),
+                    "name": hospital.name,
+                    "email": hospital.email,
+                    "address": hospital.address
+                };
 
+                var options = {
+                    url : blockchain,
+                    headers : config.headers,
+                    body: JSON.stringify(hospitalCC)
+                };
+
+                return request.post(options).then(response => {
+                    let json = JSON.parse(response);
+                    res.send(hospital);
+                }).catch(err => {
+                    console.log("error in saving Hospital CC: " + err);
+                    throw err;
+                });
+            }).catch(function(err) {
+                console.log(err);
+                res.status(500).send({message: "Some error occurred while creating the hospital. " + err});
+            });
         } else {
-            res.status(400).send("bad request. Hospital already registered");
+            return res.status(400).send("bad request. Hospital already registered");
         }
-    });
-    var hospital = new Hospital({name: req.body.name, userType:"Hospital", address: req.body.address, zip: req.body.zip, 
-        phone: req.body.phone, email: req.body.email, password: req.body.password, chekUpDate: new Date(Date.now())});
-    var promise = hospital.save();
-    promise.then(function(hospital) {
-        hospital.message = "Hospital successfully registered";
-        res.status(200).send(hospital);
-    }).catch(function(err) {
-        console.log(err);
-        res.status(500).send({message: "Some error occurred while creating the hospital."});
     });
 };
 

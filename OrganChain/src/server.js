@@ -33,6 +33,39 @@ require('./routes/Hospital.routes.js')(app);
 require('./routes/Organ.routes.js')(app);
 require('./routes/Appointment.routes.js')(app);
 require('./routes/Recipient.routes.js')(app);
-app.listen(3001, function(){
-    console.log("Server is listening on port 3001");
+require('./routes/Historian.routes.js')(app);
+var request = require('request-promise');
+var config = require('./config/database.config.js');
+const blockchain = config.blockchain + "Unos";
+
+var unosCC = {
+    "$class": "org.organchain.Unos",
+    "unosId": "99999999"
+};
+
+var options = {
+    url : blockchain,
+    headers : config.headers,
+    body: JSON.stringify(unosCC)
+};
+request.get(blockchain).then(response => {
+    let arr = JSON.parse(response);
+    if (arr && arr.length == 0) {
+        request.post(options).then(responsePost => {
+            let json = JSON.parse(responsePost);
+            app.listen(3001, function(){
+                console.log("Server is listening on port 3001");
+            });
+        }).catch(err => {
+            console.log("error in saving Unos CC: " + err);
+            throw err;
+        });
+    } else {
+        app.listen(3001, function(){
+            console.log("Server is listening on port 3001");
+        });
+    }
+}).catch(err => {
+    console.log("error in access unos CC: " + err);
+    throw err;
 });

@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/SJSU272LabF17/Project-Team-21#readme",
   "dependencies": {
+    "babel-cli": "^6.6.5",
+    "babel-preset-es2015": "*",
     "babel-preset-stage-0": "*",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.2",
@@ -27,12 +29,13 @@
     "express": "^4.16.2",
     "express-session": "^1.15.6",
     "jsonwebtoken": "^8.1.0",
-    "mongoose": "^4.13.1",
-    "nodemon": "^1.12.1",
+    "mongoose": "^4.13.6",
+    "nodemon": "^1.12.5",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
-    "babel-cli": "^6.6.5",
-    "babel-preset-es2015": "*"
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2",
+    "sort-json-array": "^0.1.7"
   },
   "devDependencies": {
     "babel-cli": "^6.6.5",

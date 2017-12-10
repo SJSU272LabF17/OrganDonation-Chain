@@ -1,42 +1,7 @@
 var Donor = require('../models/Donor.js');
-
-/*var passport = require('passport');
-app.use(expressSessions({
-  secret: "CMPE272_passport",
-  resave: false,
-  saveUninitialized: true,
-  duration: 30 * 60 * 1000,
-  activeDuration: 5 * 6 * 1000,
-  store: new mongoStore({
-    url: dbConfig.url
-  })
-}));
-app.use(passport.initialize());
-app.use(passport.session());
-var localStrategy = require("passport-local").Strategy;
-passport.serializeUser(function(user, done) {
-done(null, user);
-});
-
-passport.deserializeUser(function(user, done) {
-  done(null, user);
-});
-passport.use('local', new localStrategy({
-  usernameField: 'email',
-  passwordField: 'password'
-}, function(email, password, done) {
-    kafka.make_request('requestTopic', "login", {username:email,password:password}, function(err,results){
-        if(err){
-            done(err,{});
-        } else {
-            if(results.code == 200){
-                done(null,results.value);
-            } else {
-                done(null,false);
-            }
-        }
-    });
-}));*/
+var request = require('request-promise');
+var config = require('../config/database.config.js');
+const blockchain = config.blockchain + "Donor";
 
 exports.donorLogin = function(req,res) {
     //passport.authenticate('local', function(err, user, info) {
@@ -52,7 +17,6 @@ exports.donorLogin = function(req,res) {
                 res.status(200).send(somedonor);                
             }
         });
-    //})(req, res);
 };
 
 /**
@@ -76,10 +40,36 @@ exports.createDonor = function(req, res) {
         }
     );
     donor.save().then(function(donor) {
-        donor.message = "Donor successfully registred";
-        res.send(donor);
+        donor.message = "Donor successfully registered";
+        return donor;
+    }).then(donor => {
+        var donorCC = {
+            "$class": "org.organchain.Donor",
+            "donorId": donor._id.toString(),
+            "firstName": donor.firstName,
+            "lastName": donor.lastName,
+            "ssn": "11",
+            "age": donor.age,
+            "email": donor.email,
+            "address": donor.address,
+            "zip": donor.zip
+        };
+
+        var options = {
+            url : blockchain,
+            headers : config.headers,
+            body: JSON.stringify(donorCC)
+        };
+
+        return request.post(options).then(response => {
+            let json = JSON.parse(response);
+            res.send(donor);
+        }).catch(err => {
+            console.log("error in saving donor CC: " + err);
+            throw err;
+        });
     }).catch(function(err) {
-        res.status(500).send({message: "Some error occurred while creating the Donor user."});
+        res.status(500).send({message: "Some error occurred while creating the Donor user. " + err})
     });
 };
 
