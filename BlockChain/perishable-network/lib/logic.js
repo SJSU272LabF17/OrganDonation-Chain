@@ -118,9 +118,11 @@ function Tested(data) {
     var factory = getFactory();
     var NS = 'org.organchain';
     var organ = data.organ;
+    var testInfo = data.organTestInfo;
 
     var hospitalId = data.hospital.$identifier;
     organ.sourceHospital = data.hospital;
+    organ.organTestInfo = testInfo;
     organ.status = "TESTED";
     return getAssetRegistry(NS + '.Organ')
     .then(function (organRegistry) {

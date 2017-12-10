@@ -66,6 +66,7 @@ transaction Offered {
 
 transaction Tested extends OrganStatus {
   --> Hospital hospital
+  o String organTestInfo optional
 }
 
 transaction Matched extends OrganStatus {

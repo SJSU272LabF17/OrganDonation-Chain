@@ -3,6 +3,9 @@ var Hospital = require('../models/Hospital.js');
 var hospitalController = require('../controllers/HospitalController.js');
 var Recipient = require('../models/Recipient.js');
 var Organ = require('../models/Organ.js');
+var request = require('request-promise');
+var config = require('../config/database.config.js');
+const blockchain = config.blockchain + "Offered";
 
 /*
 this method will be called by donor to create appointment by selecting a hospital. We will create an appointment and
@@ -10,7 +13,7 @@ update the hospital chekUpDate returning the appointment object.
  */
 exports.create = function(req, res) {
     // Create and Save a new Appointment
-    if(!req.body.date) {
+    if (!req.body.date) {
         console.log("Error");
         return res.status(400).send(
             {
@@ -18,28 +21,49 @@ exports.create = function(req, res) {
             }
         );
     }
-    var promise = appointmentSave(
-      req.body.date,
-      req.body.sourceHospital, 
-      req.body.donorId,
-      req.body.organ,
-      'active',
-      'testing'
-    );
-    promise.then(appointment => {
-        Hospital.findById(req.body.sourceHospital, function(err, hospital) {
+    appointmentSave(
+        req.body.date,
+        req.body.sourceHospital,
+        req.body.donorId,
+        req.body.organ,
+        'active',
+        'testing'
+    ).then(appointment => {
+        Hospital.findById(req.body.sourceHospital, function (err, hospital) {
             hospital.chekUpDate = new Date(hospitalController.updatedHospitalTime(hospital.chekUpDate));
             var hospitalPromise = hospital.save();
             hospitalPromise.then(hospital => {
-                res.send(appointment);
-            }).catch(function(err) {
+                return hospital;
+            }).then(hospital => {
+                var thisOrgan = Organ.findById(req.body.organ, function (err, organ) {
+                    var organCC = {
+                        "$class": "org.organchain.Offered",
+                        "donor": organ.donorId.toString(),
+                        "organName": organ.name,
+                        "organId": organ._id.toString()
+                    };
+
+                    var options = {
+                        url: blockchain,
+                        headers: config.headers,
+                        body: JSON.stringify(organCC)
+                    };
+
+                    return request.post(options).then(response => {
+                        res.status(200).send(appointment);
+                    }).catch(err => {
+                        console.log("error in saving Offered transaction: " + err);
+                        res.status(500).send({message: "Some error occurred while creating the Offered transaction. " + err});
+                    });
+                }).catch(function (err) {
+                    console.log(err);
+                    res.status(500).send({message: "Some error occurred while creating the Appointment."});
+                });
+            }).catch(function (err) {
                 console.log(err);
                 res.status(500).send({message: "Some error occurred while creating the Appointment."});
             });
         });
-    }).catch(function(err) {
-        console.log(err);
-        res.status(500).send({message: "Some error occurred while creating the Appointment."});
     });
 };
 
@@ -71,23 +95,38 @@ exports.createUnosAppointment = function(req, res) {
         status: 'active',
         type: 'transplant'
     });
-    var promise = appointment.save();
-    promise.then(appointment => {
+    appointment.save().then(appointment => {
         Hospital.findById(req.body.targetHospital, function(err, hospital) {
 
             hospital.chekUpDate = new Date(hospitalController.updatedHospitalTime(hospital.chekUpDate));
-            var hospitalPromise = hospital.save();
-            hospitalPromise.then(hospital => {
+            hospital.save().then(hospital => {
                 Recipient.findById(req.body.recId, function(err, recipient) {
                     recipient.allotedOrganId = req.body.organ;
-                    var promiseRecipient = recipient.save();
-                    promiseRecipient.then(rec => {
-                        module.exports.apptInactive(appointment, req.body.appointmentId, res);
+                    recipient.save().then(rec => {
+                        var organCC = {
+                            "$class": "org.organchain.Matched",
+                            "hospital": appointment.sourceHospital.toString(),
+                            "recipient": rec._id.toString(),
+                            "organ": appointment.organ.toString()
+                        };
+
+                        var options = {
+                            url: config.blockchain + "Matched",
+                            headers: config.headers,
+                            body: JSON.stringify(organCC)
+                        };
+
+                        return request.post(options).then(response => {
+                            module.exports.apptInactive(appointment, req.body.appointmentId, res);
+                        }).catch(err => {
+                            console.log("error in saving Matched transaction: " + err);
+                            res.status(500).send({message: "error in saving Matched transaction. " + err});
+                        });
                     });
                 });
             }).catch(function(err) {
                 console.log(err);
-                res.status(500).send({message: "Some error occurred while creating the Appointment."});
+                res.status(500).send({message: "Some error occurred while creating the Unos Appointment."});
             });
         });
     }).catch(function(err) {
@@ -105,8 +144,7 @@ var appointmentSave = function(date, sourceHospital, donorId, organ, status, typ
         status: status, 
         type: type
     });
-    var promise = appointment.save();
-    return promise
+    return appointment.save();
 };
 
 exports.findAll = function(req, res) {
@@ -182,9 +220,25 @@ exports.completeTransplant = function(req, res) {
     // once transplant is done, we will update the organ with the target hospital and make the appointments inactive.
     Organ.findById(organId, function(err, organ) {
        organ.targetHospital = req.body.targetHospital;
-       var organPromise = organ.save();
-       organPromise.then(organ => {
-           module.exports.apptInactive(organ, req.body.appointmentId, res);
+
+       organ.save().then(organ => {
+           var organCC = {
+               "$class": "org.organchain.Transplant",
+               "organ": organId.toString()
+           };
+
+           var options = {
+               url: config.blockchain + "Transplant",
+               headers: config.headers,
+               body: JSON.stringify(organCC)
+           };
+
+           return request.post(options).then(response => {
+               module.exports.apptInactive(organ, req.body.appointmentId, res);
+           }).catch(err => {
+               console.log("error in saving Transplant transaction: " + err);
+               res.status(500).send({message: "error in saving Transplant transaction. " + err});
+           });
        }).catch(function (err) {
            res.status(500).send({message: "Some error occurred in Organ while updating the Appointment." + err});
        });

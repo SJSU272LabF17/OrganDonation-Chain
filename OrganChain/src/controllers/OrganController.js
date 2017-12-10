@@ -1,6 +1,9 @@
 var Organ = require('../models/Organ.js');
 var mongoose = require('mongoose');
 var AppointmentController = require('../controllers/AppointmentController.js');
+var request = require('request-promise');
+var config = require('../config/database.config.js');
+const testedBlockchain = config.blockchain + "Tested";
 
 /**
  * used by donor page to create the organ.
@@ -57,12 +60,30 @@ exports.update = function(req, res) {
     var organQuery = Organ.findById(req.params.organId);
     console.log(req.params.organId);
     organQuery.exec(function(err, organ) {
-        console.log(req.params.organ);
         organ.organTestInfo = req.body.organTestInfo;
         organ.sourceHospital = req.body.sourceHospital;
-        var promise = organ.save();
-        promise.then(organ => res.send(organ))
-            .catch(function (err) {
+        organ.save().then(organ => {
+            var organCC = {
+                "$class": "org.organchain.Tested",
+                "hospital": organ.sourceHospital.toString(),
+                "organ": organ._id.toString(),
+                "organTestInfo" : JSON.stringify(organ.organTestInfo)
+            };
+
+            var options = {
+                url : testedBlockchain,
+                headers : config.headers,
+                body: JSON.stringify(organCC)
+            };
+
+            return request.post(options).then(response => {
+                let json = JSON.parse(response);
+                res.send(organ);
+            }).catch(err => {
+                console.log("error in saving Tested Transaction: " + err);
+                throw err;
+            });
+        }).catch(function (err) {
             console.log(err);
             res.status(500).send({message: "Some error occurred while creating the Appointment."});
         });
