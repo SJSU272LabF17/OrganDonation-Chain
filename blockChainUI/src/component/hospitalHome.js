@@ -319,7 +319,7 @@ class HospitalHome extends Component {
 						            <Collapsible className="col-md-12 text-right" trigger="Personal Details">
 							            <div className="row">
 						                    <p className="col-md-2 text-right">First Name:</p>
-						                    <input className="col-md-10 text-left text-input-input autofocus" type="text" onChange={this.handleLNChange} />
+						                    <input className="col-md-10 text-left text-input-input autofocus" type="text" onChange={this.handleFNChange} />
 						                </div>
 							            <div className="row">
 						                    <p className="col-md-2 text-right">Last Name:</p>

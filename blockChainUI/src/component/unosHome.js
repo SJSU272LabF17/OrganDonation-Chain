@@ -230,7 +230,7 @@ class UnosHome extends Component {
 								            	<div className="">
 									            	<img className="patientBoxIcons" data-toggle="modal" data-target="#organDetailsModal" src="images/registered.png" alt="userIcon" onClick={this.showDonor.bind(this, step.donorId)}/>
 									            	{ step.organ && step.organ.organTestInfo ? <img height="80px" className="patientBoxIcons organToOffer" data-toggle="modal" data-target="#chekUpDetailsModal" src="images/registered1.png" alt="userIcon" onClick={this.showOrganInfo.bind(this, step)}/> : null }
-									            	{this.state.showSecondMarble==step._id ? <img className="patientBoxIcons organToOffer" src="images/unos.png" alt="userIcon" /> :
+									            	{this.state.showSecondMarble==step._id ? <img className="patientBoxIcons organToOffer unos" src="images/unos.png" alt="userIcon" /> :
 									            		<img className="patientBoxIcons float-right" data-toggle="modal" data-target="#chooseRecepientModal" src="images/add.png" alt="userIcon" onClick={this.setCurrentOrgan.bind(this, step)}/>}
 									            </div>
 									        </div>
