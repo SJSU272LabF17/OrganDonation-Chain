@@ -180,7 +180,7 @@ exports.scheduledTestingAppts = function (req, res) {
 
 exports.getAllAppts = function (req, res) {
     var donorId = req.params.donorId;
-    var sql = Appointment.find().where('donorId').equals(donorId);
+    var sql = Appointment.find().where('donorId').equals(donorId).where('status').equals('active');
 
     sql.populate("donorId").populate("organ").populate("sourceHospital")
         .exec(function(err, appts){
