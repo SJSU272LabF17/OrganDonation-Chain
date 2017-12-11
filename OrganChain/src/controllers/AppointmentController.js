@@ -161,16 +161,20 @@ exports.findAll = function(req, res) {
  * this method is used by hospital page to get the scheduled appointments. testing or transplant.
  */
 exports.scheduledTestingAppts = function (req, res) {
-    var sql = Appointment.find().where('type').equals('testing');
-
-    sql.populate("donorId").populate("organ").populate("sourceHospital")
-        .exec(function(err, appts){
-            if(err) {
-                res.status(500).send({message: "Some error occurred while retrieving appts."});
-            } else {
-                res.send(appts);
-            }
-        });
+    if (req.params.hospitalId == null) {
+        res.status(400).send({message: "invalid hospital id."});        
+    } else {
+        var sql = Appointment.find().where('type').equals('testing').where('sourceHospital').equals(req.params.hospitalId);
+        
+            sql.populate("donorId").populate("organ").populate("sourceHospital")
+                .exec(function(err, appts){
+                    if(err) {
+                        res.status(500).send({message: "Some error occurred while retrieving appts."});
+                    } else {
+                        res.send(appts);
+                    }
+                });        
+    }
 };
 
 
@@ -189,7 +193,11 @@ exports.getAllAppts = function (req, res) {
 };
 
 exports.scheduledTransplantAppts = function (req, res) {
-    var sql = Appointment.find().where('type').equals('transplant');
+    if (req.params.hospitalId == null) {
+        res.status(400).send({message: "invalid hospital id."});        
+    } else {
+
+    var sql = Appointment.find().where('type').equals('transplant').where('sourceHospital').equals(req.params.hospitalId);;
 
     sql.populate("donorId").populate("recId").populate("organ").populate("sourceHospital")
         .exec(function(err, appts){
@@ -199,6 +207,7 @@ exports.scheduledTransplantAppts = function (req, res) {
                 res.send(appts);
             }
         });
+    }
 };
 
 exports.apptInactive = function (obj, appointmentId, res) {
