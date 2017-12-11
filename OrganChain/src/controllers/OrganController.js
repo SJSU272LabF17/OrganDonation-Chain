@@ -43,7 +43,7 @@ exports.findAllUserOrgans = function(req, res) {
     if (req.params.donorId == null) {
         res.status(400).send({message: "no donorId passed"});
     }
-    var sql = Organ.find().where('donorId').equals(req.params.donorId);
+    var sql = Organ.find().where('donorId').equals(req.params.donorId).where('targetHospital').equals(undefined);
     sql.exec(function(err, organs){
             if(err) {
                 res.status(500).send({message: "Some error occurred while retrieving appts."});
