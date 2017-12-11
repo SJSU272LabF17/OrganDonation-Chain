@@ -82,7 +82,7 @@ export default function actionReducer (state = defaultState, action){
 		case 'registerDonorOrganFailed':
 		case 'handleApproveOrganFailed':
 		case 'handleTransplantOrganFailed':
-			newState.showMessage = action.payload.data.message;
+			newState.showMessage = action.payload.message;
 			alert(newState.showMessage);
 			return newState;		
 		case 'retriveTestingApptsSuccess':

@@ -112,7 +112,8 @@ class UserHome extends Component {
 	}
 
   hospitalSelectedForCheckUp(hospital){
-  	this.props.dispatch(this.props.hospitalSelectedForCheckUp(hospital, this.props));
+  	this.props.dispatch(this.props.hospitalSelectedForCheckUp(hospital, this.props))
+  	.then(this.props.dispatch(this.props.retriveDonorAppts(this.props)));
   }
 
   handleOrganTypeChange(event){
@@ -125,9 +126,15 @@ class UserHome extends Component {
   	var tempOrgan = this.state.organName;
   	if(this.props.donorOrganList && this.props.donorOrganList.length>0 && 
   		this.props.donorOrganList.filter(function(e) {return e.name==tempOrgan}).length>0){
+  		alert("Organ already registered");
   		this.setState({handleOrganRegistrationError:"Organ already registered"});
   	} else {
   		this.props.dispatch(this.props.registerDonorOrgan(this.state));
+  		var that = this;
+  		setTimeout(function () {
+	        that.props.dispatch(that.props.retriveDonorOrgans(that.props));
+	    }, 2000);
+  			
   	}
   }
 
