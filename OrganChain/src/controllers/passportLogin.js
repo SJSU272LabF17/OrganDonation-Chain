@@ -1,27 +1,34 @@
-module.exports = function(app) {
-  var passport = require('passport');
-  var localStrategy = require("passport-local").Strategy;
-  passport.serializeUser(function(user, done) {
-    done(null, user);
-  });
+var localStrategy = require("passport-local").Strategy;
+var Donor = require('../models/Donor.js');
+var request = require('request-promise');
+var Hospital = require('../models/Hospital.js');
 
-  passport.deserializeUser(function(user, done) {
-      done(null, user);
-  });
+module.exports = function(passport) {
   passport.use('local', new localStrategy({
       usernameField: 'email',
-      passwordField: 'password'
-    }, function(email, password, done) {
-        kafka.make_request('requestTopic', "login", {username:email,password:password}, function(err,results){
+      passwordField: 'password', 
+      passReqToCallback: true
+    }, function(req, email, password, done) {
+      if (req.body.userType == "Donor") {
+         Donor.findOne({email:email, password:password},(err, somedonor) => {
             if(err){
-                done(err,{});
+              done(null, false);
+            } else if(!somedonor){
+              done(null, false);
             } else {
-                if(results.code == 200){
-                    done(null,results.value);
-                } else {
-                    done(null,false);
-                }
+              done(null, somedonor);
             }
         });
+      } else if(req.body.userType == "Hospital"){
+        Hospital.findOne({email:email, password:password},(err, someHospital) => {
+            if(err){
+              done(null, false);
+            } else if(!someHospital){
+              done(null, false);
+            } else{
+              done(null, someHospital);
+            }
+        });
+      }
   }));
 };

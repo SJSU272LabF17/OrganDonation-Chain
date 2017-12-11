@@ -11,6 +11,9 @@ var db = require("./models/mongo.js");
 var expressSessions = require("express-session");
 var mongoStore = require("connect-mongo")(expressSessions);
 var cors = require('cors');
+var passport = require('passport');
+require('./controllers/passportLogin')(passport);
+var localStrategy = require("passport-local").Strategy;
 
 mongoose.Promise = global.Promise;
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -28,8 +31,22 @@ var corsOptions = {
 }
 app.use(cors(corsOptions));
 
-require('./routes/Donor.routes.js')(app);
-require('./routes/Hospital.routes.js')(app);
+
+app.use(expressSessions({
+  secret: "CMPE272_passport",
+  resave: false,
+  saveUninitialized: true,
+  duration: 30 * 60 * 1000,
+  activeDuration: 5 * 6 * 1000,
+  store: new mongoStore({
+    url: dbConfig.url
+  })
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+require('./routes/Donor.routes.js')(app, passport);
+require('./routes/Hospital.routes.js')(app, passport);
 require('./routes/Organ.routes.js')(app);
 require('./routes/Appointment.routes.js')(app);
 require('./routes/Recipient.routes.js')(app);
@@ -68,4 +85,12 @@ request.get(blockchain).then(response => {
 }).catch(err => {
     console.log("error in access unos CC: " + err);
     throw err;
+});
+
+passport.serializeUser(function(user, done) {
+done(null, user);
+});
+
+passport.deserializeUser(function(user, done) {
+  done(null, user);
 });

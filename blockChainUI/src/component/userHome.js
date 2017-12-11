@@ -105,9 +105,9 @@ class UserHome extends Component {
 	}
 
 	handleLogout(){
-		this.props.dispatch(this.props.handleLogout());
 		this.setState({showLogout:!this.state.showLogout});
-		this.props.history.push('/login');
+		this.props.dispatch(this.props.handleLogout())
+		.then(() => this.props.dispatch(this.props.history.push('/login')));
 	}
 
   hospitalSelectedForCheckUp(hospital){

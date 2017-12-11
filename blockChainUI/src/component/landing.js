@@ -1,15 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Scroll from 'react-scroll';
-import {scroller} from 'react-scroll';
+import * as Scroll from 'react-scroll';
+import { Link, DirectLink, Element , Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll';
 import { getLatestTransactions } from '../actions/allActions';
 import Pagination from 'react-js-pagination';
-
-let Link       = Scroll.Link;
-let Element    = Scroll.Element;
-let Events     = Scroll.Events;
-let scroll     = Scroll.animateScroll;
-let scrollSpy  = Scroll.scrollSpy;
 
 const mapStateToProps = (state) => {
   return {

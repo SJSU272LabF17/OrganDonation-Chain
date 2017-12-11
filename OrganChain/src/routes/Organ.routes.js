@@ -1,9 +1,8 @@
+var isAuthenticate = require('../controllers/AuthController');
 module.exports = function(app) {
     var organ = require('../controllers/OrganController.js');
-    // Create a new Donor
-    app.post('/organ', organ.createOrgan);
-    app.put('/organ/:organId', organ.update);
-    app.get('/organ', organ.findAll);
-    app.get('/organ/:donorId', organ.findAllUserOrgans);
-    // app.route('/organU/:email').get(organ.getOrganByEmail).post(organ.organCreate);
+    app.post('/organ', isAuthenticate, organ.createOrgan);
+    app.put('/organ/:organId', isAuthenticate, organ.update);
+    app.get('/organ', isAuthenticate, organ.findAll);
+    app.get('/organ/:donorId', isAuthenticate, organ.findAllUserOrgans);
 };

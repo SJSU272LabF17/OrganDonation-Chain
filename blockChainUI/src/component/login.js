@@ -129,7 +129,7 @@ class Login extends Component {
     if(sessionStorage.getItem('userType')=="Donor"){
       this.props.history.push('/userHome');
     } else if(sessionStorage.getItem('userType')=="Hospital"){
-      this.props.history.push('/HospitalHome');
+      this.props.history.push('/hospitalHome');
     } else {
       this.setState({showTyperror: true});
     }
@@ -139,7 +139,7 @@ class Login extends Component {
     if(sessionStorage.getItem('userType')=="Donor"){
       this.props.history.push('/userHome');
     } else if(sessionStorage.getItem('userType')=="Hospital"){
-      this.props.history.push('/HospitalHome');
+      this.props.history.push('/hospitalHome');
     }
   }
 
