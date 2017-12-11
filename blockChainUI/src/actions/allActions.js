@@ -139,11 +139,19 @@ export function hospitalSelectedForCheckUp(hospital, state){
 
 export function retriveTestingAppts(state){
 	return function(dispatch){
-		return axios.get(url+"/appointment/testing/hospital/"+sessionStorage.getItem('userId')).then((response) => {
-			 dispatch({type:"retriveTestingApptsSuccess", payload: response.data})
-		}).catch((err) => {
-			 dispatch({type:"retriveTestingApptsFailed", payload: err.response})
-		})
+		if(sessionStorage.getItem('userId')==null){
+			return axios.get(url+"/appointment/testing").then((response) => {
+				 dispatch({type:"retriveTestingApptsSuccess", payload: response.data})
+			}).catch((err) => {
+				 dispatch({type:"retriveTestingApptsFailed", payload: err.response})
+			})
+		} else {
+			return axios.get(url+"/appointment/testing/hospital/"+sessionStorage.getItem('userId')).then((response) => {
+				 dispatch({type:"retriveTestingApptsSuccess", payload: response.data})
+			}).catch((err) => {
+				 dispatch({type:"retriveTestingApptsFailed", payload: err.response})
+			})
+		}
 	}
 }
 

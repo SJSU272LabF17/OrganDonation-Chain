@@ -11,6 +11,10 @@ exports.create = function(req, res) {
     var sql = Recipient.find().where('name').equals(req.body.name)
         .exec(function(err, recs) {
             if (err) {
+                res.status(400).send({message: "Some error occurred while creating the RecipientInfo."});                
+            } else if(recs!=null && recs.length>0){                
+                res.status(400).send({message: "already registered recipient"});        
+            } else {
                 var recipientInfo = new Recipient({name: req.body.name, age: req.body.age, organ: req.body.organ,
                     hospital: req.body.hospital, email: req.body.email, address: req.body.address, phone: req.body.phone,
                     status: req.body.status, testInfo: req.body.testInfo});
@@ -45,8 +49,6 @@ exports.create = function(req, res) {
                     console.log(err);
                     res.status(500).send({message: "Some error occurred while creating the RecipientInfo. " + err});
                 });
-            } else {
-                res.status(400).send({message: "already registered recipient"});
             }
         });
 };

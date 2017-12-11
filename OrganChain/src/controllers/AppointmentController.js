@@ -1,6 +1,6 @@
 var Appointment = require('../models/Appointment.js');
 var Hospital = require('../models/Hospital.js');
-var hospitalController = require('../controllers/HospitalController.js');
+var hospitalController = require('../controllers/HospitalController.js')();
 var Recipient = require('../models/Recipient.js');
 var Organ = require('../models/Organ.js');
 var request = require('request-promise');
@@ -175,6 +175,17 @@ exports.scheduledTestingAppts = function (req, res) {
                     }
                 });        
     }
+};
+
+exports.scheduledAllTestingAppts = function (req, res) {
+    var sql = Appointment.find().where('type').equals('testing');
+    sql.populate("donorId").populate("organ").populate("sourceHospital").exec(function(err, appts){
+        if(err) {
+            res.status(500).send({message: "Some error occurred while retrieving appts."});
+        } else {
+            res.send(appts);
+        }
+    });
 };
 
 

@@ -101,6 +101,9 @@ export default function actionReducer (state = defaultState, action){
 		case 'getLatestTransactionsSuccess':
 			newState.latestTransactions = action.payload;
 			return newState;
+		case 'handleLogoutSuccess':
+			newState.loginMsg= "Logged out Successfully!";
+			return newState;
 		default:
 			return newState;
 	}
