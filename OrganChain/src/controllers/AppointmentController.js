@@ -15,11 +15,7 @@ exports.create = function(req, res) {
     // Create and Save a new Appointment
     if (!req.body.date) {
         console.log("Error");
-        return res.status(400).send(
-            {
-                message: "Appointment can not be empty"
-            }
-        );
+        return res.status(400).send({message: "Appointment can not be empty"});
     }
     appointmentSave(
         req.body.date,
@@ -71,11 +67,7 @@ exports.createUnosAppointment = function(req, res) {
     // Create and Save a new Appointment
     if(!req.body.date) {
         console.log("Error");
-        return res.status(400).send(
-            {
-                message: "Appointment can not be empty"
-            }
-        );
+        return res.status(400).send({message:"Appointment can not be empty"});
     }
     if (!req.body.recId) {
         return res.status(400).send({message: "recId can not be empty" });
@@ -162,7 +154,7 @@ exports.findAll = function(req, res) {
  */
 exports.scheduledTestingAppts = function (req, res) {
     if (req.params.hospitalId == null) {
-        res.status(400).send({message: "invalid hospital id."});        
+        res.status(400).send({message: "Invalid hospital id."});        
     } else {
         var sql = Appointment.find().where('type').equals('testing').where('sourceHospital').equals(req.params.hospitalId);
         

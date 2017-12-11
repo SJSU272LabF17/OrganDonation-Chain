@@ -24,7 +24,7 @@ exports.createOrgan = function(req, res) {
                 res.status(500).send({message: "Some error occurred while creating the organ."});
             });
         } else {
-            res.status(400).send("Organ " + req.body.name + " already registered");
+            res.status(400).send({message:"Organ " + req.body.name + " already registered"});
         }
     });
 };

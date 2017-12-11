@@ -13,7 +13,8 @@ const mapStateToProps = (state) => {
     email: state.actionReducer.email,
     isloggedIn: state.actionReducer.isloggedIn,
     testingAppts: state.actionReducer.testingAppts,
-    transplantAppts: state.actionReducer.transplantAppts
+    transplantAppts: state.actionReducer.transplantAppts,
+    showMessage: state.actionReducer.showMessage
   }
 }
 
@@ -226,23 +227,7 @@ class HospitalHome extends Component {
 	render() {
 		return (
 			<div className="homePage">
-			    <div className="wrapper">			    
-			    	<div id="recepientRegisteredModal" className="modal fade" role="dialog">
-				        <div className="modal-dialog">
-				            <div className="modal-content">
-				                <div className="modal-header">
-				                    <h4 className="modal-title">Recipient registration</h4>
-				                    <button type="button" className="close" data-dismiss="modal">&times;</button>
-				                </div>
-				                <div className="modal-body">
-				                    <p>Congratulations!! Recipient successfully registered.</p>
-				                </div>
-				                <div className="modal-footer">
-				                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-				                </div>
-				            </div>
-				        </div>
-				    </div>
+			    <div className="wrapper">
 			        <Tabs className="tabs tabs-1">
 				        <nav id="sidebar">
 				            <div className="sidebar-header">
@@ -384,7 +369,7 @@ class HospitalHome extends Component {
 										    <input className="col-md-10 text-left text-input-input autofocus" type="text" onChange={this.handleDoctorNotesChange} />
 										</div>
 									</Collapsible>
-					                <input type="submit" className="btn login-button" value="Register Recipient" onClick={this.registerRecepeint}  data-toggle="modal" data-target="#recepientRegisteredModal"/>
+					                <input type="submit" className="btn login-button" value="Register Recipient" onClick={this.registerRecepeint}/>
 					        	</div>
 				        	</TabContent>
 				        	<TabContent for="section-transplant">

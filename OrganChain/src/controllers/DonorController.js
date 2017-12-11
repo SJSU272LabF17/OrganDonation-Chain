@@ -90,10 +90,10 @@ module.exports = function(passport) {
     module.getDonorbyEmail = function(req,res) {
         Donor.find({email:req.params.email},(err, somedonor) => {
             if(err){
-                res.status(500).send("Some error occurred while retrieving donors info.");
+                res.status(500).send({message:"Some error occurred while retrieving donors info."});
             }
             if(!somedonor){
-                res.json("Donor not found");
+                res.send({message:"Donor not found"});
             }
             res.json(somedonor[0]);
         });

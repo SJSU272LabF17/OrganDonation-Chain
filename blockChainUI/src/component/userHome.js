@@ -17,7 +17,8 @@ const mapStateToProps = (state) => {
     hospitalByZip: state.actionReducer.hospitalByZip,
     showRegisterDonorOrganSuccess : state.actionReducer.showRegisterDonorOrganSuccess,
     donorAppts : state.actionReducer.donorAppts,
-    donorOrganList : state.actionReducer.donorOrganList
+    donorOrganList : state.actionReducer.donorOrganList,
+    showMessage: state.actionReducer.showMessage
   }
 }
 
@@ -221,7 +222,7 @@ class UserHome extends Component {
 			                    <p className="col-md-2 text-right">Organ Type:</p>
 			                    <input className="col-md-10 text-left text-input-input autofocus" type="text" value={this.props.organName} onChange={this.handleOrganNameChange} />
 			                </div>
-			                <input type="submit" className="btn login-button" value="Register My Organ!" onClick={this.handleOrganRegistration} data-toggle="modal" data-target="#registerDonorOrganSuccessModal"/>
+			                <input type="submit" className="btn login-button" value="Register My Organ!" onClick={this.handleOrganRegistration}/>
 			        	</TabContent>
 			            <TabContent for="section-appointment">
 				            <nav className="navbar navbar-default">
@@ -281,7 +282,7 @@ class UserHome extends Component {
 												    </div>
 												    <p className="mb-1">{step.address}</p>
 												    <small><span>Slot Available: </span><span>{step.chekUpDate}</span></small>
-												    <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#appointmentBookedModal" onClick={this.hospitalSelectedForCheckUp.bind(this, step)}>Choose</button>
+												    <button type="button" className="btn btn-primary" onClick={this.hospitalSelectedForCheckUp.bind(this, step)}>Choose</button>
 												</div>
 							            	) : null}
 										</div>}
@@ -307,24 +308,6 @@ class UserHome extends Component {
 		                <div className="modal-footer">
 		                    <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={() => {
                             this.props.dispatch(this.props.retriveDonorOrgans(this.props))
-                        }}>Close</button>
-		                </div>
-		            </div>
-		        </div>
-		    </div>
-	    	<div id="appointmentBookedModal" className="modal fade" role="dialog">
-		        <div className="modal-dialog">
-		            <div className="modal-content">
-		                <div className="modal-header">
-		                    <h4 className="modal-title">Appointment Booked!</h4>
-		                    <button type="button" className="close" data-dismiss="modal">&times;</button>
-		                </div>
-		                <div className="modal-body">
-		                    <p>Congratulations!! Appointment successfully scheduled at hospital.</p>
-		                </div>
-		                <div className="modal-footer">
-		                    <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={() => {
-                            this.props.dispatch(this.props.retriveDonorAppts(this.props))
                         }}>Close</button>
 		                </div>
 		            </div>

@@ -16,7 +16,8 @@ const defaultState = {
     donorAppts : [],
     donorOrganList : [],
     recepeintList : [],
-    latestTransactions : []
+    latestTransactions : [],
+    showMessage: ""
 }
 
 export default function actionReducer (state = defaultState, action){
@@ -68,13 +69,25 @@ export default function actionReducer (state = defaultState, action){
 			newState.loginFailed= !action.payload.success;
 			newState.loginMsg= action.payload.message;
 			return newState;
+		case 'hospitalSelectedForCheckUpSuccess':
+			newState.showMessage = "Appointment successfully booked!";
+			alert(newState.showMessage);
+			return newState;
 		case 'getHospitalsbyZipSuccess':
 			newState.hospitalByZip = action.payload;
 			return newState;
 		case 'registerDonorOrganSuccess':
 			newState.organId = action.payload.organId;
 			newState.showRegisterDonorOrganSuccess = true;
+			newState.showMessage = "Organ Successfully Registered! Please schedule an appointment to nearest hospital!";
+			alert(newState.showMessage);
 			return newState;
+		case 'registerDonorOrganFailed':
+		case 'handleApproveOrganFailed':
+		case 'handleTransplantOrganFailed':
+			newState.showMessage = action.payload.data.message;
+			alert(newState.showMessage);
+			return newState;		
 		case 'retriveTestingApptsSuccess':
 			newState.testingAppts = action.payload;
 			return newState;
@@ -82,9 +95,17 @@ export default function actionReducer (state = defaultState, action){
 			newState.transplantAppts = action.payload;
 			return newState;
 		case 'handleApproveOrganSuccess':
+			newState.showMessage = "Organ tested and approved!";
+			alert(newState.showMessage);
 			return newState;
 		case 'handleTransplantOrganSuccess':
+			newState.showMessage = "Congratulations!! Organ transplant completed!";
+			alert(newState.showMessage);
 			return newState;
+		case 'chooseRecepientSuccess':
+			newState.showMessage = "Recipient assigned!";
+			alert(newState.showMessage);
+			return newState;			
 		case 'retriveDonorApptsSuccess':
 			if(action.payload && action.payload.length>0){
 				newState.donorAppts = action.payload;
@@ -103,6 +124,24 @@ export default function actionReducer (state = defaultState, action){
 			return newState;
 		case 'handleLogoutSuccess':
 			newState.loginMsg= "Logged out Successfully!";
+			return newState;
+		case 'registerRecepeintSuccess':
+			newState.showMessage= "Recipient Successfully registered!";
+			alert(newState.showMessage);
+			return newState;
+		case 'retriveDonorByEmailFailed':
+		case 'getHospitalsbyZipFailed':
+		case 'retriveTestingApptsFailed':
+		case 'retriveTransplantApptsFailed':
+		case 'retriveDonorApptsFailed':
+		case 'retriveDonorOrgansFailed':
+		case 'retriveRecListFailed':
+		case 'getLatestTransactionsFailed':
+		case 'registerRecepeintFailed':
+		case 'chooseRecepientFailed':
+		case 'hospitalSelectedForCheckUpFailed':
+			newState.showMessage= action.payload.data.message;
+			alert(newState.showMessage);
 			return newState;
 		default:
 			return newState;

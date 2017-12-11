@@ -7,7 +7,8 @@ import Pagination from 'react-js-pagination';
 
 const mapStateToProps = (state) => {
   return {
-    latestTransactions: state.actionReducer.latestTransactions
+    latestTransactions: state.actionReducer.latestTransactions,
+    showMessage: state.actionReducer.showMessage
   }
 }
 

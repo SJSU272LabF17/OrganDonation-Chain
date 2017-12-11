@@ -68,7 +68,7 @@ module.exports = function(passport) {
                     res.status(500).send({message: "Some error occurred while creating the hospital. " + err});
                 });
             } else {
-                return res.status(400).send("bad request. Hospital already registered");
+                return res.status(400).send({message:"bad request. Hospital already registered"});
             }
         });
     };
@@ -136,7 +136,7 @@ module.exports = function(passport) {
     module.updateHospitalByEmail = (req, res) => {
         Hospital.findOneAndUpdate({email:req.params.email}, req.body, {new:true}, (err, someHospital) => {
             if(err){
-              res.send(err);
+              res.send({message:err});
             }
             res.json(someHospital);
           });

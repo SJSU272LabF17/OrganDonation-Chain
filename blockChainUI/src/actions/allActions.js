@@ -267,9 +267,9 @@ export function chooseRecepient(recipient, state){
 			donorId : state.currentDonorId
 		};
 		return axios.post(url+"/appointment/unos", temp).then((response) => {
-			 dispatch({type:"hospitalSelectedForCheckUpSuccess", payload: response.data})
+			 dispatch({type:"chooseRecepientSuccess", payload: response.data})
 		}).catch((err) => {
-			 dispatch({type:"hospitalSelectedForCheckUpFailed", payload: err.response.data})
+			 dispatch({type:"chooseRecepientFailed", payload: err.response.data})
 		})		
 	}
 }

@@ -13,7 +13,8 @@ const mapStateToProps = (state) => {
     email: state.actionReducer.email,
     isloggedIn: state.actionReducer.isloggedIn,
     testingAppts: state.actionReducer.testingAppts,
-    recepeintList : state.actionReducer.recepeintList
+    recepeintList : state.actionReducer.recepeintList,
+    showMessage: state.actionReducer.showMessage
   }
 }
 
