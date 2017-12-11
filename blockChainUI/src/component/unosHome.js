@@ -208,9 +208,6 @@ class UnosHome extends Component {
 				                <li className="active" onClick={this.retriveTestingAppts}>
 				                    <TabLink to="section-checkUp"><a href="#section-profile" data-toggle="tab" className="tab-toggle active">Assign Recipient</a></TabLink>
 				                </li>
-				                <li>
-				                    <TabLink to="section-hospital"><a href="#section-organ" data-toggle="tab" className="tab-toggle">Register Hospital</a></TabLink>
-				                </li>
 				            </ul>
 				        </nav>
 				        <div className="tab-content content">

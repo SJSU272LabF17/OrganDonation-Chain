@@ -133,7 +133,7 @@ export function hospitalSelectedForCheckUp(hospital, state){
 
 export function retriveTestingAppts(state){
 	return function(dispatch){
-		return axios.get("http://localhost:3001/appointment/testing").then((response) => {
+		return axios.get("http://localhost:3001/appointment/testing/hospital/"+sessionStorage.getItem('userId')).then((response) => {
 			 dispatch({type:"retriveTestingApptsSuccess", payload: response.data})
 		}).catch((err) => {
 			 dispatch({type:"retriveTestingApptsFailed", payload: err.response})
@@ -153,7 +153,7 @@ export function retriveDonorAppts(state){
 
 export function retriveTransplantAppts(){
 	return function(dispatch){
-		return axios.get("http://localhost:3001/appointment/transplant").then((response) => {
+		return axios.get("http://localhost:3001/appointment/transplant/hospital/"+sessionStorage.getItem('userId')).then((response) => {
 			 dispatch({type:"retriveTransplantApptsSuccess", payload: response.data})
 		}).catch((err) => {
 			 dispatch({type:"retriveTransplantApptsFailed", payload: err.response.data})
