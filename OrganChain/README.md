@@ -6,3 +6,9 @@ MongoDB is used for storing useful information only. Blockchain Transactions are
 transactions are stored by hyperledger.
 
 Server save and fetches the blockchain transaction through middleware code written in go-lang.
+
+For back-end:-
+1. go to ./OrganChain
+2. To install node modules run command- npm install 
+3. To start server run command- npm start
+Server will start on http://localhost:3001/ 
