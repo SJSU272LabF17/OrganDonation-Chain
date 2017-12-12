@@ -53,9 +53,6 @@ export default function actionReducer (state = defaultState, action){
 			newState.registerFailed= true;
 			newState.registerMsg= "Registration failed!";
 			return newState;
-		case 'handleLogoutSuccess':
-			newState.isloggedIn= false;
-			return newState;
 		case 'retriveDonorByEmailSuccess':
 			newState.name= action.payload.name;
 			newState.firstName= action.payload.firstName;
@@ -85,7 +82,7 @@ export default function actionReducer (state = defaultState, action){
 		case 'registerDonorOrganFailed':
 		case 'handleApproveOrganFailed':
 		case 'handleTransplantOrganFailed':
-			newState.showMessage = action.payload.data.message;
+			newState.showMessage = action.payload.message;
 			alert(newState.showMessage);
 			return newState;		
 		case 'retriveTestingApptsSuccess':
@@ -123,6 +120,7 @@ export default function actionReducer (state = defaultState, action){
 			newState.latestTransactions = action.payload;
 			return newState;
 		case 'handleLogoutSuccess':
+			newState.isloggedIn= false;
 			newState.loginMsg= "Logged out Successfully!";
 			return newState;
 		case 'registerRecepeintSuccess':
@@ -140,7 +138,7 @@ export default function actionReducer (state = defaultState, action){
 		case 'registerRecepeintFailed':
 		case 'chooseRecepientFailed':
 		case 'hospitalSelectedForCheckUpFailed':
-			newState.showMessage= action.payload.data.message;
+			newState.showMessage= action.payload.message;
 			alert(newState.showMessage);
 			return newState;
 		default:

@@ -394,7 +394,7 @@ class HospitalHome extends Component {
 						            </nav>
 						            <div className="row">
 						            	{this.props.transplantAppts && this.props.transplantAppts.length>0 ? this.props.transplantAppts.map(step =>
-								            <div className={"col-md-5 patientBox "+(this.state.tranplantCompleted==step._id ? "iconDisabled ": "" )+(step.status=="inactive" ? "hideBlock" : "")}>
+								            <div className={"col-md-6 patientBox "+(this.state.tranplantCompleted==step._id ? "iconDisabled ": "" )+(step.status=="inactive" ? "hideBlock" : "")}>
 								            	<div className="patientBoxInner">
 									            	<div className="boxTitle" data-toggle="modal" data-target="#organDetailsModal">{step.donorId ? step.donorId.firstName+" "+step.donorId.lastName : ""}</div>
 									            	<div className="">

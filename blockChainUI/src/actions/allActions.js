@@ -67,7 +67,7 @@ export function handleLogout(){
 		return axios.post(url+"/logout", {}).then((response) => {
 			sessionStorage.removeItem('userType');
 			sessionStorage.removeItem('userId');
-			dispatch({type:"handleLogoutSuccess", payload: {}})
+			dispatch({type:"handleLogoutSuccess", payload: response.data})
 		}).catch((err) => {
 			dispatch({type:"handleLogoutFailed", payload: err.response.data})
 		})
