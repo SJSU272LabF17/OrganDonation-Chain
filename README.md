@@ -4,6 +4,13 @@
 
 OrganChain at SCIV
 
+### Team Members.
+- Chirag Arora https://github.com/chiragarora17
+- Utsav Jain https://github.com/utsavjain1408
+- Maulik Bhatt https://github.com/bhattmaulik1991
+- Yifan Liang https://github.com/elsieleung59
+
+
 ### Organ Waitlist ledger on a blockchain.
 
 ### Organ waitlist uses two servers :
